@@ -1,0 +1,83 @@
+\hypertarget{class_circuit}{}\doxysection{Circuit Class Reference}
+\label{class_circuit}\index{Circuit@{Circuit}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_circuit_a44cc8ee424426ab0b45343f1eaec8ed0}\label{class_circuit_a44cc8ee424426ab0b45343f1eaec8ed0}} 
+{\bfseries Circuit} (int)
+\item 
+\mbox{\Hypertarget{class_circuit_a0ff4f972f689ae8c5d9ca5592e6bc0c5}\label{class_circuit_a0ff4f972f689ae8c5d9ca5592e6bc0c5}} 
+int {\bfseries qubit\+\_\+number} ()
+\item 
+\mbox{\Hypertarget{class_circuit_a0841314733814a89c1fda406241be6c5}\label{class_circuit_a0841314733814a89c1fda406241be6c5}} 
+\mbox{\hyperlink{class_gate}{Gate}} \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (int index)
+\item 
+\mbox{\Hypertarget{class_circuit_ab4b2adcf96f7349f541adecb2ef1e507}\label{class_circuit_ab4b2adcf96f7349f541adecb2ef1e507}} 
+void {\bfseries add} (\mbox{\hyperlink{class_gate}{Gate}} g)
+\item 
+\mbox{\Hypertarget{class_circuit_a5d73203b4cf5dabccff22c0bd6d1a310}\label{class_circuit_a5d73203b4cf5dabccff22c0bd6d1a310}} 
+void {\bfseries addI} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a99329d7851406bc4e9e4e68e94154d1b}\label{class_circuit_a99329d7851406bc4e9e4e68e94154d1b}} 
+void {\bfseries addX} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a5e568a36e96e1ac8ffda1f2fefd1bee3}\label{class_circuit_a5e568a36e96e1ac8ffda1f2fefd1bee3}} 
+void {\bfseries addY} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a5afee596e40334b12a5ce45823a47d9e}\label{class_circuit_a5afee596e40334b12a5ce45823a47d9e}} 
+void {\bfseries addZ} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_aaffbd3505e6de686ad88f554d272a19f}\label{class_circuit_aaffbd3505e6de686ad88f554d272a19f}} 
+void {\bfseries addH} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a372214cbea796498bb2d0d80aa836d4f}\label{class_circuit_a372214cbea796498bb2d0d80aa836d4f}} 
+void {\bfseries add\+SqrtX} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a208ad61fe859a030f581112f345c9deb}\label{class_circuit_a208ad61fe859a030f581112f345c9deb}} 
+void {\bfseries add\+SqrtY} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_ab1603f7d4c673cbaf7bc85d43a168a94}\label{class_circuit_ab1603f7d4c673cbaf7bc85d43a168a94}} 
+void {\bfseries add\+SqrtW} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a6a0945d08eff9edb7d2e91c6a5a60d70}\label{class_circuit_a6a0945d08eff9edb7d2e91c6a5a60d70}} 
+void {\bfseries addT} (int x)
+\item 
+\mbox{\Hypertarget{class_circuit_a6bd95c8ba84ded6776d6d6be43472b23}\label{class_circuit_a6bd95c8ba84ded6776d6d6be43472b23}} 
+void {\bfseries addU} (int x, double theta, double lambda, double phi)
+\item 
+\mbox{\Hypertarget{class_circuit_a6b49f9098b22964f39e6ed4eb3b38037}\label{class_circuit_a6b49f9098b22964f39e6ed4eb3b38037}} 
+void {\bfseries add\+CNOT} (int x, int y)
+\item 
+\mbox{\Hypertarget{class_circuit_a286412c7a7308e884adf1280e9d34e56}\label{class_circuit_a286412c7a7308e884adf1280e9d34e56}} 
+void {\bfseries add\+CZ} (int x, int y)
+\item 
+\mbox{\Hypertarget{class_circuit_a6e30c9e590420892294f48582abdc575}\label{class_circuit_a6e30c9e590420892294f48582abdc575}} 
+void {\bfseries add\+CP} (int x, int y, double theta)
+\item 
+\mbox{\Hypertarget{class_circuit_affc5a17dd9932120eb67ca8a7812224b}\label{class_circuit_affc5a17dd9932120eb67ca8a7812224b}} 
+void {\bfseries add\+CU} (int x, int y, double theta, double lambda, double phi)
+\item 
+\mbox{\Hypertarget{class_circuit_a4b2c3c84df000943ca3fa3f495691da0}\label{class_circuit_a4b2c3c84df000943ca3fa3f495691da0}} 
+void {\bfseries add\+Swap} (int x, int y)
+\item 
+\mbox{\Hypertarget{class_circuit_aee0db9503ef884b7f128a14bb2c26de2}\label{class_circuit_aee0db9503ef884b7f128a14bb2c26de2}} 
+void {\bfseries add\+ISwap} (int x, int y, double theta)
+\item 
+\mbox{\Hypertarget{class_circuit_a18dbf4093afd13d302d8aa26f7f27c23}\label{class_circuit_a18dbf4093afd13d302d8aa26f7f27c23}} 
+void {\bfseries add\+FSim} (int x, int y, double theta, double phi)
+\item 
+\mbox{\Hypertarget{class_circuit_ae8ecee4c5943d30b6e9219c3f81b73a9}\label{class_circuit_ae8ecee4c5943d30b6e9219c3f81b73a9}} 
+void {\bfseries print} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_circuit_afa6cc684e89de3c823490c50b667e97f}\label{class_circuit_afa6cc684e89de3c823490c50b667e97f}} 
+std\+::vector$<$ \mbox{\hyperlink{class_gate}{Gate}} $>$ {\bfseries gate}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/include/quantum/circuit.\+hpp\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/src/quantum/circuit.\+cpp\end{DoxyCompactItemize}

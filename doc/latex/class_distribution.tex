@@ -1,0 +1,66 @@
+\hypertarget{class_distribution}{}\doxysection{Distribution Class Reference}
+\label{class_distribution}\index{Distribution@{Distribution}}
+Inheritance diagram for Distribution\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_distribution}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}{Type}} \+: int \{ \mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a7cf95bdcf4a150dbb27988d86dab5739}{k\+Local}}
+, \mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0ab5830ea11b8aa5771ae97cda14c1edbf}{k\+Global}}
+, \mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a17dbe3b7da5fca63df108b5fe108b704}{k\+Cartesian\+Block}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_distribution_a753d1a0d42e498776889093ee2564802}\label{class_distribution_a753d1a0d42e498776889093ee2564802}} 
+{\bfseries Distribution} (\mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}{Distribution\+::\+Type}} type)
+\item 
+\mbox{\Hypertarget{class_distribution_a6f76479ec648c658182924868abff3bf}\label{class_distribution_a6f76479ec648c658182924868abff3bf}} 
+\mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}{Distribution\+::\+Type}} {\bfseries type} () const
+\item 
+\mbox{\Hypertarget{class_distribution_ad62e529ddc403f5d93b1d90b14fc7c3f}\label{class_distribution_ad62e529ddc403f5d93b1d90b14fc7c3f}} 
+virtual void {\bfseries get\+\_\+local\+\_\+data} (shape\+\_\+t global\+\_\+shape, shape\+\_\+t \&local\+\_\+shape, shape\+\_\+t \&local\+\_\+start, shape\+\_\+t \&local\+\_\+end)
+\item 
+\mbox{\Hypertarget{class_distribution_a0a0e9f7a56ffac64931e55e6e945e57a}\label{class_distribution_a0a0e9f7a56ffac64931e55e6e945e57a}} 
+virtual void {\bfseries get\+\_\+local\+\_\+shape} (shape\+\_\+t global\+\_\+shape, shape\+\_\+t \&local\+\_\+shape)
+\item 
+\mbox{\Hypertarget{class_distribution_a1b4980fae9794f1e3d6cd9af5e8d64d6}\label{class_distribution_a1b4980fae9794f1e3d6cd9af5e8d64d6}} 
+virtual size\+\_\+t {\bfseries global\+\_\+size} (shape\+\_\+t global\+\_\+shape)
+\item 
+\mbox{\Hypertarget{class_distribution_aa7916c7e0772ae436e8509bc5d82eced}\label{class_distribution_aa7916c7e0772ae436e8509bc5d82eced}} 
+virtual size\+\_\+t {\bfseries local\+\_\+size} (shape\+\_\+t global\+\_\+shape)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}\label{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}} 
+\index{Distribution@{Distribution}!Type@{Type}}
+\index{Type@{Type}!Distribution@{Distribution}}
+\doxysubsubsection{\texorpdfstring{Type}{Type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0}{Distribution\+::\+Type}} \+: int}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kLocal@{kLocal}!Distribution@{Distribution}}\index{Distribution@{Distribution}!kLocal@{kLocal}}}\mbox{\Hypertarget{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a7cf95bdcf4a150dbb27988d86dab5739}\label{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a7cf95bdcf4a150dbb27988d86dab5739}} 
+k\+Local&this tensor is only stored on local process. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kGlobal@{kGlobal}!Distribution@{Distribution}}\index{Distribution@{Distribution}!kGlobal@{kGlobal}}}\mbox{\Hypertarget{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0ab5830ea11b8aa5771ae97cda14c1edbf}\label{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0ab5830ea11b8aa5771ae97cda14c1edbf}} 
+k\+Global&a redundant copy of this tensor is stored on each process. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kCartesianBlock@{kCartesianBlock}!Distribution@{Distribution}}\index{Distribution@{Distribution}!kCartesianBlock@{kCartesianBlock}}}\mbox{\Hypertarget{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a17dbe3b7da5fca63df108b5fe108b704}\label{class_distribution_a959fb7679cc6e49a43845b2a70f78cd0a17dbe3b7da5fca63df108b5fe108b704}} 
+k\+Cartesian\+Block&this tensor is blockly stored on cartesian processes. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/include/distribution.\+hpp\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/src/distribution.\+cpp\end{DoxyCompactItemize}

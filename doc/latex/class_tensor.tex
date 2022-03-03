@@ -1,0 +1,393 @@
+\hypertarget{class_tensor}{}\doxysection{Tensor$<$ Ty $>$ Class Template Reference}
+\label{class_tensor}\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+
+
+\mbox{\hyperlink{class_tensor}{Tensor}} class.  
+
+
+
+
+{\ttfamily \#include $<$tensor.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_tensor_a8fad70c07e5d3f23f1872d43d8c743e6}{Tensor}} (\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$distribution)
+\begin{DoxyCompactList}\small\item\em Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_tensor_aa3cb2440351d217ada11194a3ec91b55}{Tensor}} (\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$distribution, Ty $\ast$, const shape\+\_\+t \&)
+\begin{DoxyCompactList}\small\item\em Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_tensor_a3ef9938bf87b8be7d03878142c7e64fd}{Tensor}} (\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$distribution, const shape\+\_\+t \&, bool=true)
+\begin{DoxyCompactList}\small\item\em Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object from a given shape. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_tensor_ac64f521422e2b9c9cb608c26079f24ef}{Tensor}} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&)
+\begin{DoxyCompactList}\small\item\em Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object, copy constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_tensor_a1bfce4a09aad57b1dae55ba8c7b804c5}{$\sim$\+Tensor}} ()
+\begin{DoxyCompactList}\small\item\em Destroy the Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_tensor_a7bc1b92389bab8fb8edf0e819580f98c}\label{class_tensor_a7bc1b92389bab8fb8edf0e819580f98c}} 
+const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ {\bfseries operator=} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&)
+\item 
+Ty $\ast$ \mbox{\hyperlink{class_tensor_ae7c4bee0cf143833eb99ca734698b040}{data}} () const
+\begin{DoxyCompactList}\small\item\em Get Tensor$<$\+Ty$>$\+::data\+\_\+. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_tensor_ab385a156bcd36ed3c0d6c2df1de06c31}{ndim}} () const
+\begin{DoxyCompactList}\small\item\em Get Tensor$<$\+Ty$>$\+::ndim\+\_\+. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_tensor_a7e927c65d18256a0ae790971ee5464c2}{size}} () const
+\begin{DoxyCompactList}\small\item\em Get Tensor$<$\+Ty$>$\+::size\+\_\+. \end{DoxyCompactList}\item 
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor_a71f7668aca951027634c1f7988958539}{stride}} () const
+\begin{DoxyCompactList}\small\item\em Get Tensor$<$\+Ty$>$\+::stride\+\_\+. \end{DoxyCompactList}\item 
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor_a3dc0b2fe393fb867e7257365c2b8d6fc}{stride\+\_\+in\+\_\+bytes}} () const
+\begin{DoxyCompactList}\small\item\em Get Tensor$<$\+Ty$>$\+::stride\+\_\+in\+\_\+bytes\+\_\+. \end{DoxyCompactList}\item 
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor_a650068fea9ffeb1306916f1b99358f5f}{shape}} () const
+\begin{DoxyCompactList}\small\item\em Get \mbox{\hyperlink{class_tensor_a3dc0b2fe393fb867e7257365c2b8d6fc}{Tensor$<$\+Ty$>$\+::stride\+\_\+in\+\_\+bytes}}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_tensor_a5df5de71f9238fda1a6a7e501461682e}\label{class_tensor_a5df5de71f9238fda1a6a7e501461682e}} 
+const Transpose {\bfseries trans} () const
+\item 
+\mbox{\Hypertarget{class_tensor_af5db9797fd4e3e05e7233623579b3f2a}\label{class_tensor_af5db9797fd4e3e05e7233623579b3f2a}} 
+\mbox{\hyperlink{class_communicator}{Communicator}}$<$ Ty $>$ $\ast$ {\bfseries comm} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a9617806b21c52a5aa83e0bee03dc5d63}\label{class_tensor_a9617806b21c52a5aa83e0bee03dc5d63}} 
+\mbox{\hyperlink{class_distribution}{Distribution}} {\bfseries distribution} () const
+\item 
+\mbox{\Hypertarget{class_tensor_acb240090ad8d1b0018127bc5a49e162d}\label{class_tensor_acb240090ad8d1b0018127bc5a49e162d}} 
+int {\bfseries comm\+\_\+size} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a3e7cf269b65f876c38596b84f48131a0}\label{class_tensor_a3e7cf269b65f876c38596b84f48131a0}} 
+int {\bfseries comm\+\_\+rank} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a8cd80fc8b19982392e824917f3070f56}\label{class_tensor_a8cd80fc8b19982392e824917f3070f56}} 
+const shape\+\_\+t \& {\bfseries shape\+\_\+global} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a782b1eaa417285de59937fb06181f1b9}\label{class_tensor_a782b1eaa417285de59937fb06181f1b9}} 
+Ty \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (int)
+\item 
+\mbox{\Hypertarget{class_tensor_a4a27e35b8dc47d80a025851bde91a93a}\label{class_tensor_a4a27e35b8dc47d80a025851bde91a93a}} 
+Ty \& {\bfseries operator()} (int,...)
+\item 
+\mbox{\Hypertarget{class_tensor_afaa0702f46e334108999f7ca936d4007}\label{class_tensor_afaa0702f46e334108999f7ca936d4007}} 
+Ty {\bfseries getitem} (const shape\+\_\+t \&)
+\item 
+\mbox{\Hypertarget{class_tensor_a0b3b44203ea2cd0657ed9d99f9d82fa3}\label{class_tensor_a0b3b44203ea2cd0657ed9d99f9d82fa3}} 
+Ty {\bfseries getitem} (int)
+\item 
+\mbox{\Hypertarget{class_tensor_aabb75f548164ac8211b29240af4fa855}\label{class_tensor_aabb75f548164ac8211b29240af4fa855}} 
+void {\bfseries setitem} (const shape\+\_\+t \&, Ty)
+\item 
+\mbox{\Hypertarget{class_tensor_a2591a48519ced014286d3017d2886043}\label{class_tensor_a2591a48519ced014286d3017d2886043}} 
+void {\bfseries setitem} (int, Ty)
+\item 
+\mbox{\Hypertarget{class_tensor_ade87cff4447d6c36bbfdda856ac8231b}\label{class_tensor_ade87cff4447d6c36bbfdda856ac8231b}} 
+void {\bfseries constant} (Ty c)
+\item 
+\mbox{\Hypertarget{class_tensor_af86f0ba000ea81304f60999aabc8d03e}\label{class_tensor_af86f0ba000ea81304f60999aabc8d03e}} 
+void {\bfseries zeros} ()
+\item 
+\mbox{\Hypertarget{class_tensor_a44c32c9e5e88b857dea9d16ca8e238dc}\label{class_tensor_a44c32c9e5e88b857dea9d16ca8e238dc}} 
+void {\bfseries ones} ()
+\item 
+\mbox{\Hypertarget{class_tensor_ad26f64fa1cae9c6ca22cda2344e4d0cf}\label{class_tensor_ad26f64fa1cae9c6ca22cda2344e4d0cf}} 
+void {\bfseries randn} ()
+\item 
+\mbox{\Hypertarget{class_tensor_ab9c2a7b3b441ddb432b0feb54b7990b0}\label{class_tensor_ab9c2a7b3b441ddb432b0feb54b7990b0}} 
+void {\bfseries add} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&)
+\item 
+\mbox{\Hypertarget{class_tensor_ae799f4d55be680660f5845655c15f48d}\label{class_tensor_ae799f4d55be680660f5845655c15f48d}} 
+void {\bfseries sub} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&)
+\item 
+\mbox{\Hypertarget{class_tensor_a20cc2f1fe83aca50ee46ad6339c77008}\label{class_tensor_a20cc2f1fe83aca50ee46ad6339c77008}} 
+void {\bfseries mul} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&)
+\item 
+\mbox{\Hypertarget{class_tensor_acea65caed79ae9ca171663adc3dce16a}\label{class_tensor_acea65caed79ae9ca171663adc3dce16a}} 
+void {\bfseries nmul} (Ty)
+\item 
+\mbox{\Hypertarget{class_tensor_a00deb40aa3558a023e728476e4b7aed1}\label{class_tensor_a00deb40aa3558a023e728476e4b7aed1}} 
+void {\bfseries ndiv} (Ty)
+\item 
+\mbox{\Hypertarget{class_tensor_ac646b90237d66578cbd46697296b3371}\label{class_tensor_ac646b90237d66578cbd46697296b3371}} 
+void {\bfseries reshape} (const shape\+\_\+t \&)
+\item 
+\mbox{\Hypertarget{class_tensor_af3cfbb2a7ceefba5fdb4c6268ec56e73}\label{class_tensor_af3cfbb2a7ceefba5fdb4c6268ec56e73}} 
+void {\bfseries permute} (const shape\+\_\+t \&)
+\item 
+\mbox{\Hypertarget{class_tensor_a3648f829b7cfa1944d0b003d00d30e5c}\label{class_tensor_a3648f829b7cfa1944d0b003d00d30e5c}} 
+double {\bfseries fnorm} () const
+\item 
+\mbox{\Hypertarget{class_tensor_ae3a0a0604f0297f2e53e70af3acb3e7d}\label{class_tensor_ae3a0a0604f0297f2e53e70af3acb3e7d}} 
+Ty {\bfseries sum} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a7df5dc950a59fa9f4d3f85d3413ad0cf}\label{class_tensor_a7df5dc950a59fa9f4d3f85d3413ad0cf}} 
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ {\bfseries N} ()
+\item 
+\mbox{\Hypertarget{class_tensor_ad4d020fe3cafca3415ef67923523e0b1}\label{class_tensor_ad4d020fe3cafca3415ef67923523e0b1}} 
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ {\bfseries T} ()
+\item 
+\mbox{\Hypertarget{class_tensor_af1e7caf53f2f186025c84561c09de9d7}\label{class_tensor_af1e7caf53f2f186025c84561c09de9d7}} 
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ {\bfseries C} ()
+\item 
+\mbox{\Hypertarget{class_tensor_adf9ccdf5e74731406ffba66ba1e63384}\label{class_tensor_adf9ccdf5e74731406ffba66ba1e63384}} 
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ {\bfseries copy} () const
+\item 
+\mbox{\Hypertarget{class_tensor_a8980e6e41b0401ce5447911ec90612a1}\label{class_tensor_a8980e6e41b0401ce5447911ec90612a1}} 
+void {\bfseries print} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_tensor_aedbc0319d7b45c6f4660592334df05fd}\label{class_tensor_aedbc0319d7b45c6f4660592334df05fd}} 
+{\footnotesize template$<$typename T1 $>$ }\\const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ {\bfseries operator+} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&, const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&)
+\item 
+\mbox{\Hypertarget{class_tensor_ac50549c23fa4da368a2e48c39ca348cd}\label{class_tensor_ac50549c23fa4da368a2e48c39ca348cd}} 
+{\footnotesize template$<$typename T1 $>$ }\\const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ {\bfseries operator-\/} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&, const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&)
+\item 
+\mbox{\Hypertarget{class_tensor_a9247b585bc2ce0978c6358e4a71a8d4d}\label{class_tensor_a9247b585bc2ce0978c6358e4a71a8d4d}} 
+{\footnotesize template$<$typename T1 $>$ }\\const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ {\bfseries operator$\ast$} (const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&, const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ T1 $>$ \&)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename Ty$>$\newline
+class Tensor$<$ Ty $>$}
+
+\mbox{\hyperlink{class_tensor}{Tensor}} class. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_tensor_a8fad70c07e5d3f23f1872d43d8c743e6}\label{class_tensor_a8fad70c07e5d3f23f1872d43d8c743e6}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!Tensor@{Tensor}}
+\index{Tensor@{Tensor}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{Tensor()}{Tensor()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::\mbox{\hyperlink{class_tensor}{Tensor}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$}]{distribution }\end{DoxyParamCaption})}
+
+
+
+Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. 
+
+Do nothing.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em distribution} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_tensor_aa3cb2440351d217ada11194a3ec91b55}\label{class_tensor_aa3cb2440351d217ada11194a3ec91b55}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!Tensor@{Tensor}}
+\index{Tensor@{Tensor}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{Tensor()}{Tensor()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::\mbox{\hyperlink{class_tensor}{Tensor}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$}]{distribution,  }\item[{Ty $\ast$}]{A,  }\item[{const shape\+\_\+t \&}]{shape }\end{DoxyParamCaption})}
+
+
+
+Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. 
+
+\begin{DoxyWarning}{Warning}
+If distribution-\/$>$type() is Distribution\+::\+Global, user should make sure that datas in all processes are the same.
+\end{DoxyWarning}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em distribution} & \\
+\hline
+{\em A} & \\
+\hline
+{\em shape} & global shape. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_tensor_a3ef9938bf87b8be7d03878142c7e64fd}\label{class_tensor_a3ef9938bf87b8be7d03878142c7e64fd}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!Tensor@{Tensor}}
+\index{Tensor@{Tensor}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{Tensor()}{Tensor()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::\mbox{\hyperlink{class_tensor}{Tensor}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_distribution}{Distribution}} $\ast$}]{distribution,  }\item[{const shape\+\_\+t \&}]{shape,  }\item[{bool}]{zero = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object from a given shape. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em distribution} & \\
+\hline
+{\em shape} & global shape. \\
+\hline
+{\em zero} & whether to clear all values to zero (default is true). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_tensor_ac64f521422e2b9c9cb608c26079f24ef}\label{class_tensor_ac64f521422e2b9c9cb608c26079f24ef}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!Tensor@{Tensor}}
+\index{Tensor@{Tensor}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{Tensor()}{Tensor()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::\mbox{\hyperlink{class_tensor}{Tensor}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$ \&}]{t }\end{DoxyParamCaption})}
+
+
+
+Construct a new Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object, copy constructor. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em t} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_tensor_a1bfce4a09aad57b1dae55ba8c7b804c5}\label{class_tensor_a1bfce4a09aad57b1dae55ba8c7b804c5}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!````~Tensor@{$\sim$Tensor}}
+\index{````~Tensor@{$\sim$Tensor}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{$\sim$Tensor()}{~Tensor()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+\mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::$\sim$\mbox{\hyperlink{class_tensor}{Tensor}}}
+
+
+
+Destroy the Tensor$<$\+Ty$>$\+:: \mbox{\hyperlink{class_tensor}{Tensor}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_tensor_ae7c4bee0cf143833eb99ca734698b040}\label{class_tensor_ae7c4bee0cf143833eb99ca734698b040}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!data@{data}}
+\index{data@{data}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{data()}{data()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+Ty $\ast$ \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::data\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get Tensor$<$\+Ty$>$\+::data\+\_\+. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+Ty$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_tensor_ab385a156bcd36ed3c0d6c2df1de06c31}\label{class_tensor_ab385a156bcd36ed3c0d6c2df1de06c31}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!ndim@{ndim}}
+\index{ndim@{ndim}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{ndim()}{ndim()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+int \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::ndim\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get Tensor$<$\+Ty$>$\+::ndim\+\_\+. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_tensor_a650068fea9ffeb1306916f1b99358f5f}\label{class_tensor_a650068fea9ffeb1306916f1b99358f5f}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!shape@{shape}}
+\index{shape@{shape}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{shape()}{shape()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::shape\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get \mbox{\hyperlink{class_tensor_a3dc0b2fe393fb867e7257365c2b8d6fc}{Tensor$<$\+Ty$>$\+::stride\+\_\+in\+\_\+bytes}}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+const shape\+\_\+t\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_tensor_a7e927c65d18256a0ae790971ee5464c2}\label{class_tensor_a7e927c65d18256a0ae790971ee5464c2}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!size@{size}}
+\index{size@{size}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+int \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::size\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get Tensor$<$\+Ty$>$\+::size\+\_\+. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_tensor_a71f7668aca951027634c1f7988958539}\label{class_tensor_a71f7668aca951027634c1f7988958539}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!stride@{stride}}
+\index{stride@{stride}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{stride()}{stride()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::stride\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get Tensor$<$\+Ty$>$\+::stride\+\_\+. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+const shape\+\_\+t\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_tensor_a3dc0b2fe393fb867e7257365c2b8d6fc}\label{class_tensor_a3dc0b2fe393fb867e7257365c2b8d6fc}} 
+\index{Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}!stride\_in\_bytes@{stride\_in\_bytes}}
+\index{stride\_in\_bytes@{stride\_in\_bytes}!Tensor$<$ Ty $>$@{Tensor$<$ Ty $>$}}
+\doxysubsubsection{\texorpdfstring{stride\_in\_bytes()}{stride\_in\_bytes()}}
+{\footnotesize\ttfamily template$<$typename Ty $>$ \\
+const shape\+\_\+t \& \mbox{\hyperlink{class_tensor}{Tensor}}$<$ Ty $>$\+::stride\+\_\+in\+\_\+bytes\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get Tensor$<$\+Ty$>$\+::stride\+\_\+in\+\_\+bytes\+\_\+. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Ty} & \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+const shape\+\_\+t\& 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/include/tensor.\+hpp\item 
+/\+Users/harmoniikaa/\+Workspace/diana-\/\+Tucker/template/tensor/tensor\+\_\+mpi.\+tpp\end{DoxyCompactItemize}
