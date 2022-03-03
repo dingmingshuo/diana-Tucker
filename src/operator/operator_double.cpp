@@ -12,53 +12,58 @@ extern "C" {
 #include "mkl_lapacke.h"
 }
 #else
+#ifdef DIANA_BLAS
 extern "C" {
 #include "cblas.h"
 #include "lapacke.h"
 }
 #endif
+#endif
 
-template <>
+template<>
 void Operator<double>::add(double *C, double *A, double *B, size_t n) {
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] + B[i];
     }
 }
 
-template <>
+template<>
 void Operator<double>::sub(double *C, double *A, double *B, size_t n) {
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] - B[i];
     }
 }
 
-template <>
+template<>
 void Operator<double>::mul(double *C, double *A, double *B, size_t n) {
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] * B[i];
     }
 }
 
-template <>
+template<>
 void Operator<double>::nmul(double *C, double *A, double B, size_t n) {
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] * B;
     }
 }
 
-template <> void Operator<double>::constant(double *A, double c, size_t n) {
+template<>
+void Operator<double>::constant(double *A, double c, size_t n) {
     for (size_t i = 0; i < n; i++) {
         A[i] = c;
     }
 }
 
-template <> void Operator<double>::randn(double *A, size_t n) {
+template<>
+void Operator<double>::randn(double *A, size_t n) {
     for (size_t i = 0; i < n; i++) {
         A[i] = Util::randn();
     }
 }
 
-template <> double Operator<double>::fnorm(double *A, size_t n) {
+template<>
+double Operator<double>::fnorm(double *A, size_t n) {
     double ret = 0;
     for (size_t i = 0; i < n; i++) {
         ret += A[i] * A[i];
@@ -66,26 +71,29 @@ template <> double Operator<double>::fnorm(double *A, size_t n) {
     return std::sqrt(ret);
 }
 
-template <>
+template<>
 void Operator<double>::matmulNN(double *C, double *A, double *B, size_t m,
                                 size_t n, size_t k) {
     double alpha = 1.0;
-    int lda = (int)m;
-    int ldb = (int)k;
+    int lda = (int) m;
+    int ldb = (int) k;
     double beta = 0.0;
-    int ldc = (int)m;
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, (int)m, (int)n,
-                (int)k, alpha, A, lda, B, ldb, beta, C, ldc);
+    int ldc = (int) m;
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, (int) m, (int) n,
+                (int) k, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-template <>
+template<>
 void Operator<double>::matmulNT(double *C, double *A, double *B, size_t m,
                                 size_t n, size_t k) {
+    Summary::start(__func__, 2ll * m * n * k);
     double alpha = 1.0;
-    int lda = (int)m;
-    int ldb = (int)n;
+    int lda = (int) m;
+    int ldb = (int) n;
     double beta = 0.0;
-    int ldc = (int)m;
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, (int)m, (int)n, (int)k,
+    int ldc = (int) m;
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, (int) m, (int) n,
+                (int) k,
                 alpha, A, lda, B, ldb, beta, C, ldc);
+    Summary::end(__func__);
 }

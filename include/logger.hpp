@@ -28,7 +28,7 @@
                       << __FUNCTION__ << ":" << __LINE__ << "] " << #x         \
                       << " = " << (x) << std::endl;                            \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define tick                                                                   \
     do {                                                                       \
@@ -36,7 +36,7 @@
             std::cerr << "[" COLOR_DEBUG "TICK" COLOR_RESET " "                \
                       << __FUNCTION__ << ":" << __LINE__ << "] " << std::endl; \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define info(x)                                                                \
     do {                                                                       \
@@ -44,7 +44,7 @@
             std::cerr << "[" COLOR_INFO "INFO" COLOR_RESET " " << __FUNCTION__ \
                       << ":" << __LINE__ << "] " << (x) << std::endl;          \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define warn(x)                                                                \
     do {                                                                       \
@@ -52,7 +52,7 @@
             std::cerr << "[" COLOR_WARN "WARN" COLOR_RESET " " << __FUNCTION__ \
                       << ":" << __LINE__ << "] " << (x) << std::endl;          \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define checkwarn(x)                                                           \
     do {                                                                       \
@@ -63,7 +63,7 @@
                           << std::endl;                                        \
             }                                                                  \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define error(x)                                                               \
     do {                                                                       \
@@ -74,7 +74,7 @@
             exit(-3);                                                          \
             __builtin_unreachable();                                           \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #undef checkerr
 #define checkerr(x)                                                            \
@@ -88,7 +88,7 @@
                 __builtin_unreachable();                                       \
             }                                                                  \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define fatal(x)                                                               \
     do {                                                                       \
@@ -99,7 +99,7 @@
             exit(-4);                                                          \
             __builtin_unreachable();                                           \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #undef assert
 #define assert(x)                                                              \
@@ -113,7 +113,7 @@
                 __builtin_unreachable();                                       \
             }                                                                  \
         }                                                                      \
-    } while (0);
+    } while (0)
 
 #define pbp(x)                                                                 \
     do {                                                                       \
@@ -126,7 +126,7 @@
             }                                                                  \
         }                                                                      \
         delete comm;                                                           \
-    } while (0);
+    } while (0)
 
 #define print_vec(x)                                                           \
     do {                                                                       \
@@ -134,19 +134,20 @@
             std::cerr << item << " ";                                          \
         }                                                                      \
         std::cerr << std::endl;                                                \
-    } while (0);
+    } while (0)
 
 void tic_();
+
 void toc_();
 
 #define tic                                                                    \
     do {                                                                       \
         tic_();                                                                \
-    } while (0);
+    } while (0)
 
 #define toc                                                                    \
     do {                                                                       \
         toc_();                                                                \
-    } while (0);
+    } while (0)
 
 #endif

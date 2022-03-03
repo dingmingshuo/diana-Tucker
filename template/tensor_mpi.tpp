@@ -1,4 +1,5 @@
 #pragma once
+
 #include "util.hpp"
 #include "def.hpp"
 #include "logger.hpp"
@@ -13,14 +14,14 @@
  * Private member variables.
  */
 
-template <typename Ty>
+template<typename Ty>
 std::map<Ty *, int> Tensor<Ty>::ref_count = std::map<Ty *, int>();
 
 /*
  * Private member functions.
  */
 
-template <typename Ty>
+template<typename Ty>
 inline void Tensor<Ty>::init_by_shape(const shape_t &shape) {
     this->op_ = new Operator<Ty>();
     this->ndim_ = shape.size();
@@ -40,7 +41,7 @@ inline void Tensor<Ty>::init_by_shape(const shape_t &shape) {
         this->is_matrix_ = true;
         this->trans_ = Transpose::kN;
     }
-    for (auto d : shape) {
+    for (auto d: shape) {
         this->size_ *= d;
         this->shape_.push_back(d);
         this->stride_.push_back(d);
@@ -51,15 +52,15 @@ inline void Tensor<Ty>::init_by_shape(const shape_t &shape) {
         this->stride_[i] = this->stride_[i - 1] * this->shape_[i - 1];
     }
     // Calculate the stride_in_bytes_ array
-    for (auto i : this->stride_) {
+    for (auto i: this->stride_) {
         this->stride_in_bytes_.push_back(i);
     }
-    for (auto &i : this->stride_in_bytes_) {
+    for (auto &i: this->stride_in_bytes_) {
         i *= sizeof(Ty);
     }
 }
 
-template <typename Ty>
+template<typename Ty>
 inline void Tensor<Ty>::init_by_distribution(const shape_t &shape,
                                              Distribution *distribution) {
     this->distribution_ = distribution;
@@ -74,7 +75,7 @@ inline void Tensor<Ty>::init_by_distribution(const shape_t &shape,
     this->comm_size_ = this->comm_->size();
 }
 
-template <typename Ty>
+template<typename Ty>
 inline void Tensor<Ty>::assert_shape(const Tensor<Ty> &A, const Tensor<Ty> &B) {
 #ifndef DIANA_PERFORMANCE_MODE
     assert(A.size() == B.size());
@@ -84,24 +85,24 @@ inline void Tensor<Ty>::assert_shape(const Tensor<Ty> &A, const Tensor<Ty> &B) {
 #endif
 }
 
-template <typename Ty>
+template<typename Ty>
 inline void Tensor<Ty>::assert_permutation(const Tensor<Ty> &A,
                                            const shape_t &perm) {
 #ifndef DIANA_PERFORMANCE_MODE
-    int n = perm.size();
+    size_t n = perm.size();
     assert(n == A.ndim());
     shape_t c(n);
-    for (auto i : perm) {
+    for (auto i: perm) {
         assert(i < n);
         c[i]++;
     }
-    for (auto i : c) {
+    for (auto i: c) {
         assert(i == 1);
     }
 #endif
 }
 
-template <typename Ty>
+template<typename Ty>
 inline int Tensor<Ty>::shape_t_to_index(const shape_t &idx) {
 #ifndef DIANA_PERFORMANCE_MODE
     assert(idx.size() == this->ndim_);
@@ -127,7 +128,8 @@ inline int Tensor<Ty>::shape_t_to_index(const shape_t &idx) {
  * @tparam Ty
  * @param distribution
  */
-template <typename Ty> Tensor<Ty>::Tensor() {
+template<typename Ty>
+Tensor<Ty>::Tensor() {
     this->data_ = nullptr;
     this->op_ = nullptr;
     this->distribution_ = nullptr;
@@ -144,7 +146,8 @@ template <typename Ty> Tensor<Ty>::Tensor() {
  * @param A
  * @param shape global shape.
  */
-template <typename Ty> Tensor<Ty>::Tensor(Ty *A, const shape_t &shape) {
+template<typename Ty>
+Tensor<Ty>::Tensor(Ty *A, const shape_t &shape) {
     assert(A != nullptr);
     this->distribution_ = nullptr;
     this->comm_ = nullptr;
@@ -163,7 +166,8 @@ template <typename Ty> Tensor<Ty>::Tensor(Ty *A, const shape_t &shape) {
  * @param shape Tensor shape.
  * @param zero Whether to clear all values to zero (default is true).
  */
-template <typename Ty> Tensor<Ty>::Tensor(const shape_t &shape, bool zero) {
+template<typename Ty>
+Tensor<Ty>::Tensor(const shape_t &shape, bool zero) {
     this->distribution_ = nullptr;
     this->comm_ = nullptr;
     this->init_by_shape(shape);
@@ -186,7 +190,7 @@ template <typename Ty> Tensor<Ty>::Tensor(const shape_t &shape, bool zero) {
  * @param A
  * @param shape Global tensor shape.
  */
-template <typename Ty>
+template<typename Ty>
 Tensor<Ty>::Tensor(Distribution *distribution, Ty *A, const shape_t &shape) {
     assert(A != nullptr);
     this->init_by_distribution(shape, distribution);
@@ -203,7 +207,7 @@ Tensor<Ty>::Tensor(Distribution *distribution, Ty *A, const shape_t &shape) {
  * @param shape global shape.
  * @param zero whether to clear all values to zero (default is true).
  */
-template <typename Ty>
+template<typename Ty>
 Tensor<Ty>::Tensor(Distribution *distribution, const shape_t &shape,
                    bool zero) {
     this->init_by_distribution(shape, distribution);
@@ -221,7 +225,8 @@ Tensor<Ty>::Tensor(Distribution *distribution, const shape_t &shape,
  * @tparam Ty
  * @param t
  */
-template <typename Ty> Tensor<Ty>::Tensor(const Tensor<Ty> &t) {
+template<typename Ty>
+Tensor<Ty>::Tensor(const Tensor<Ty> &t) {
     if (t.distribution() != nullptr) {
         this->init_by_distribution(t.shape_global(), t.distribution());
     } else {
@@ -247,7 +252,8 @@ template <typename Ty> Tensor<Ty>::Tensor(const Tensor<Ty> &t) {
  *
  * @tparam Ty
  */
-template <typename Ty> Tensor<Ty>::~Tensor() {
+template<typename Ty>
+Tensor<Ty>::~Tensor() {
     delete this->op_;
     delete this->comm_;
     if (this->data_ == nullptr) {
@@ -267,7 +273,8 @@ template <typename Ty> Tensor<Ty>::~Tensor() {
  * @tparam Ty
  * @return Ty* data
  */
-template <typename Ty> inline Ty *Tensor<Ty>::data() const {
+template<typename Ty>
+inline Ty *Tensor<Ty>::data() const {
     return this->data_;
 }
 
@@ -277,7 +284,8 @@ template <typename Ty> inline Ty *Tensor<Ty>::data() const {
  * @tparam Ty
  * @return Operator<Ty>*
  */
-template <typename Ty> inline Operator<Ty> *Tensor<Ty>::op() const {
+template<typename Ty>
+inline Operator<Ty> *Tensor<Ty>::op() const {
     return this->op_;
 }
 
@@ -287,7 +295,8 @@ template <typename Ty> inline Operator<Ty> *Tensor<Ty>::op() const {
  * @tparam Ty
  * @return size_t ndim
  */
-template <typename Ty> inline size_t Tensor<Ty>::ndim() const {
+template<typename Ty>
+inline size_t Tensor<Ty>::ndim() const {
     return this->ndim_;
 }
 
@@ -297,7 +306,8 @@ template <typename Ty> inline size_t Tensor<Ty>::ndim() const {
  * @tparam Ty
  * @return size_t size
  */
-template <typename Ty> inline size_t Tensor<Ty>::size() const {
+template<typename Ty>
+inline size_t Tensor<Ty>::size() const {
     return this->size_;
 }
 
@@ -307,7 +317,8 @@ template <typename Ty> inline size_t Tensor<Ty>::size() const {
  * @tparam Ty
  * @return const shape_t& stride
  */
-template <typename Ty> inline const shape_t &Tensor<Ty>::stride() const {
+template<typename Ty>
+inline const shape_t &Tensor<Ty>::stride() const {
     return this->stride_;
 }
 
@@ -317,7 +328,7 @@ template <typename Ty> inline const shape_t &Tensor<Ty>::stride() const {
  * @tparam Ty
  * @return const shape_t& stride_in_bytes
  */
-template <typename Ty>
+template<typename Ty>
 inline const shape_t &Tensor<Ty>::stride_in_bytes() const {
     return this->stride_in_bytes_;
 }
@@ -328,35 +339,43 @@ inline const shape_t &Tensor<Ty>::stride_in_bytes() const {
  * @tparam Ty
  * @return const shape_t& shape
  */
-template <typename Ty> inline const shape_t &Tensor<Ty>::shape() const {
+template<typename Ty>
+inline const shape_t &Tensor<Ty>::shape() const {
     return this->shape_;
 }
 
-template <typename Ty> inline bool Tensor<Ty>::is_matrix() const {
+template<typename Ty>
+inline bool Tensor<Ty>::is_matrix() const {
     return this->is_matrix_;
 }
 
-template <typename Ty> inline Transpose Tensor<Ty>::trans() const {
+template<typename Ty>
+inline Transpose Tensor<Ty>::trans() const {
     return this->trans_;
 }
 
-template <typename Ty> inline Distribution *Tensor<Ty>::distribution() const {
+template<typename Ty>
+inline Distribution *Tensor<Ty>::distribution() const {
     return this->distribution_;
 }
 
-template <typename Ty> inline Communicator<Ty> *Tensor<Ty>::comm() const {
+template<typename Ty>
+inline Communicator<Ty> *Tensor<Ty>::comm() const {
     return this->comm_;
 }
 
-template <typename Ty> inline int Tensor<Ty>::comm_size() const {
+template<typename Ty>
+inline int Tensor<Ty>::comm_size() const {
     return this->comm_size_;
 }
 
-template <typename Ty> inline int Tensor<Ty>::comm_rank() const {
+template<typename Ty>
+inline int Tensor<Ty>::comm_rank() const {
     return this->comm_rank_;
 }
 
-template <typename Ty> inline const shape_t &Tensor<Ty>::shape_global() const {
+template<typename Ty>
+inline const shape_t &Tensor<Ty>::shape_global() const {
     return this->shape_global_;
 }
 
@@ -366,20 +385,23 @@ template <typename Ty> inline const shape_t &Tensor<Ty>::shape_global() const {
  * @tparam Ty
  * @return Tensor<Ty>
  */
-template <typename Ty> Tensor<Ty> Tensor<Ty>::gather() {
+template<typename Ty>
+Tensor<Ty> Tensor<Ty>::gather() {
     return Function::gather<Ty>(*this);
 }
 
-template <typename Ty>
+template<typename Ty>
 Tensor<Ty> Tensor<Ty>::scatter(Distribution *distribution, int proc) {
     return Function::scatter<Ty>(*this, distribution, proc);
 }
 
-template <typename Ty> Ty &Tensor<Ty>::operator[](size_t index) {
+template<typename Ty>
+Ty &Tensor<Ty>::operator[](size_t index) {
     return this->data_[index];
 }
 
-template <typename Ty> Ty &Tensor<Ty>::operator()(size_t x, ...) {
+template<typename Ty>
+Ty &Tensor<Ty>::operator()(size_t x, ...) {
     size_t index = x * this->stride_[0];
     va_list args;
     va_start(args, x);
@@ -390,7 +412,7 @@ template <typename Ty> Ty &Tensor<Ty>::operator()(size_t x, ...) {
     return this->data_[index];
 }
 
-template <typename Ty>
+template<typename Ty>
 const Tensor<Ty> Tensor<Ty>::operator=(const Tensor<Ty> &t) {
     this->init_by_shape(t.shape_global());
     this->init_by_distribution(t.distribution());
@@ -408,56 +430,67 @@ const Tensor<Ty> Tensor<Ty>::operator=(const Tensor<Ty> &t) {
     return *this;
 }
 
-template <typename Ty> void Tensor<Ty>::constant(Ty c) {
+template<typename Ty>
+void Tensor<Ty>::constant(Ty c) {
     this->op_->constant(this->data_, c, this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::zeros() { this->constant(0); }
+template<typename Ty>
+void Tensor<Ty>::zeros() { this->constant(0); }
 
-template <typename Ty> void Tensor<Ty>::ones() { this->constant(1); }
+template<typename Ty>
+void Tensor<Ty>::ones() { this->constant(1); }
 
-template <typename Ty> void Tensor<Ty>::randn() {
+template<typename Ty>
+void Tensor<Ty>::randn() {
     this->op_->randn(this->data_, this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::add(const Tensor<Ty> &B) {
+template<typename Ty>
+void Tensor<Ty>::add(const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(*this, B);
     this->op_->add(this->data_, this->data_, B.data(), this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::sub(const Tensor<Ty> &B) {
+template<typename Ty>
+void Tensor<Ty>::sub(const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(*this, B);
     this->op_->sub(this->data_, this->data_, B.data(), this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::mul(const Tensor<Ty> &B) {
+template<typename Ty>
+void Tensor<Ty>::mul(const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(*this, B);
     this->op_->nmul(this->data_, this->data_, B.data(), this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::nmul(Ty c) {
+template<typename Ty>
+void Tensor<Ty>::nmul(Ty c) {
     this->op_->nmul(this->data_, this->data_, c, this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::ndiv(Ty c) {
+template<typename Ty>
+void Tensor<Ty>::ndiv(Ty c) {
     assert(c != 0);
     this->op_->nmul(this->data_, this->data_, 1 / c, this->size_);
 }
 
-template <typename Ty> void Tensor<Ty>::reshape(const shape_t &new_shape) {
+template<typename Ty>
+void Tensor<Ty>::reshape(const shape_t &new_shape) {
     int size_new = 1;
-    for (auto i : new_shape) {
+    for (auto i: new_shape) {
         size_new *= i;
     }
     assert(size_new == this->size_);
     this->init_by_distribution(new_shape, this->distribution);
 }
 
-template <typename Ty> void Tensor<Ty>::permute(const shape_t &perm) {
+template<typename Ty>
+void Tensor<Ty>::permute(const shape_t &perm) {
     // TODO: check it!!!
     Tensor<Ty>::assert_permutation(*this, perm);
-    auto [data_new, shape_new] =
-        this->op_->permute(this->data_, this->shape_, perm);
+    auto[data_new, shape_new] =
+    this->op_->permute(this->data_, this->shape_, perm);
     // Reinit by shape.
     this->init_by_shape(shape_new);
     // Change data.
@@ -467,42 +500,49 @@ template <typename Ty> void Tensor<Ty>::permute(const shape_t &perm) {
     Tensor<Ty>::ref_count[this->data_]++;
 }
 
-template <typename Ty> double Tensor<Ty>::fnorm() const {
+template<typename Ty>
+double Tensor<Ty>::fnorm() const {
     return Function::fnorm<Ty>(*this);
 }
 
-template <typename Ty> Ty Tensor<Ty>::sum() const {
+template<typename Ty>
+Ty Tensor<Ty>::sum() const {
     return Function::sum<Ty>(*this);
 }
 
-template <typename Ty> Tensor<Ty> Tensor<Ty>::N() {
+template<typename Ty>
+Tensor<Ty> Tensor<Ty>::N() {
     assert(this->ndim() == 2);
     Tensor<Ty> ret(*this);
     ret.trans_ = Transpose::kN;
     return ret;
 }
 
-template <typename Ty> Tensor<Ty> Tensor<Ty>::T() {
+template<typename Ty>
+Tensor<Ty> Tensor<Ty>::T() {
     assert(this->ndim() == 2);
     Tensor<Ty> ret(*this);
     ret.trans_ = Transpose::kT;
     return ret;
 }
 
-template <typename Ty> Tensor<Ty> Tensor<Ty>::C() {
+template<typename Ty>
+Tensor<Ty> Tensor<Ty>::C() {
     assert(this->ndim() == 2);
     Tensor<Ty> ret(*this);
     ret.trans_ = Transpose::kC;
     return ret;
 }
 
-template <typename Ty> Tensor<Ty> Tensor<Ty>::copy() const {
+template<typename Ty>
+Tensor<Ty> Tensor<Ty>::copy() const {
     Tensor<Ty> ret(this->shape_global_, false, this->distribution_);
     Util::memcpy(ret.data_, this->data_, this->size_ * sizeof(Ty));
     return ret;
 }
 
-template <typename Ty> void Tensor<Ty>::print() const {
+template<typename Ty>
+void Tensor<Ty>::print() const {
     // TODO: Rewrite this function. This implementation is quite ugly.
     std::string ret = "[";
     if (this->ndim_ == 0) {
@@ -555,7 +595,7 @@ template <typename Ty> void Tensor<Ty>::print() const {
  * Friend functions.
  **/
 
-template <typename Ty>
+template<typename Ty>
 const Tensor<Ty> operator+(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(A, B);
     Tensor<Ty> ret(A.shape());
@@ -563,7 +603,7 @@ const Tensor<Ty> operator+(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     return ret;
 }
 
-template <typename Ty>
+template<typename Ty>
 const Tensor<Ty> operator-(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(A, B);
     Tensor<Ty> ret(A.shape());
@@ -571,7 +611,7 @@ const Tensor<Ty> operator-(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     return ret;
 }
 
-template <typename Ty>
+template<typename Ty>
 const Tensor<Ty> operator*(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     Tensor<Ty>::assert_shape(A, B);
     Tensor<Ty> ret(A.shape());
@@ -579,19 +619,22 @@ const Tensor<Ty> operator*(const Tensor<Ty> &A, const Tensor<Ty> &B) {
     return ret;
 }
 
-template <typename Ty> const Tensor<Ty> operator*(Ty c, const Tensor<Ty> &A) {
+template<typename Ty>
+const Tensor<Ty> operator*(Ty c, const Tensor<Ty> &A) {
     Tensor<Ty> ret(A.shape());
     A.op()->nmul(ret.data(), A.data(), c, A.size());
     return ret;
 }
 
-template <typename Ty> const Tensor<Ty> operator*(const Tensor<Ty> &A, Ty c) {
+template<typename Ty>
+const Tensor<Ty> operator*(const Tensor<Ty> &A, Ty c) {
     Tensor<Ty> ret(A.shape());
     A.op()->nmul(ret.data(), A.data(), c, A.size());
     return ret;
 }
 
-template <typename Ty> const Tensor<Ty> operator/(const Tensor<Ty> &A, Ty c) {
+template<typename Ty>
+const Tensor<Ty> operator/(const Tensor<Ty> &A, Ty c) {
     assert(c != 0);
     Tensor<Ty> ret(A.shape());
     A.op()->nmul(ret.data(), A.data(), 1.0 / c, A.size());

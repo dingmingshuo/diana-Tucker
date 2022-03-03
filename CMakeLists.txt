@@ -61,7 +61,7 @@ set(SOURCES
         src/communicator.cpp
         src/distribution.cpp
         main.cpp
-        )
+        include/summary.hpp src/summary.cpp)
 
 # Include directories
 include_directories(
@@ -101,7 +101,7 @@ if (USE_BLAS OR USE_LAPACK)
     #TODO
     #We need write our FindBLAS.cmake and FindLapack.cmake
     #Refer to https://github.com/pytorch/pytorch/blob/master/cmake/Modules
-    set(BLA_VENDOR "Intel10_64_dyn")
+    set(BLA_VENDOR "Intel10_64lp")
     find_package(BLAS QUIET)
     if (BLAS_FOUND)
         add_definitions("-DDIANA_MKL")
@@ -112,6 +112,7 @@ if (USE_BLAS OR USE_LAPACK)
     endif (NOT BLAS_FOUND)
     message(STATUS "FIND THE BLAS OF VERSION ${BLA_VENDOR}")
     add_definitions("-DDIANA_BLAS")
+    include_directories(${BLAS_INCLUDE_DIRS})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
     message(STATUS "Found BLA_VENDOR=${BLA_VENDOR}, LIB=${BLAS_LIBRARIES}, build BLAS support")
 else ()

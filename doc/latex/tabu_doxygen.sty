@@ -669,7 +669,7 @@
     \ifodd 1\iftabu@spread \else \ifdim\tabu@target=\z@ \else 0 \fi\fi\relax
             \tabu@spreadtrue
     \else   \begingroup \iffalse{\fi \ifnum0=`}\fi
-            \toks@{}\def\tabu@stack{b}%
+            \toks@{}\def\tabu@events{b}%
             \expandafter\tabu@collectbody\expandafter\tabu@quickrule
                                          \expandafter\endgroup
     \fi
@@ -1215,7 +1215,7 @@
     \ifnum \count@>\thr@@ \let\@halignto \@empty  \tabucolX@init
                           \def\tabu@lasttry{\m@ne\p@}\fi
     \begingroup \iffalse{\fi \ifnum0=`}\fi
-        \toks@{}\def\tabu@stack{b}\iftabuscantokens \endlinechar=10 \obeyspaces \fi %
+        \toks@{}\def\tabu@events{b}\iftabuscantokens \endlinechar=10 \obeyspaces \fi %
                                   \tabu@collectbody \tabu@strategy %
 }% \tabu@setstrategy
 \def\tabu@savecounters{%
@@ -1239,8 +1239,8 @@
 }% \tabu@Xinit
 %% Collecting the environment body ----------------------------------
 \long\def\tabu@collectbody #1#2\end #3{%
-    \edef\tabu@stack{\tabu@pushbegins #2\begin\end\expandafter\@gobble\tabu@stack}%
-    \ifx \tabu@stack\@empty
+    \edef\tabu@events{\tabu@pushbegins #2\begin\end\expandafter\@gobble\tabu@events}%
+    \ifx \tabu@events\@empty
         \toks@\expandafter{\expandafter\tabu@thebody\expandafter{\the\toks@ #2}%
                 \def\tabu@end@envir{\end{#3}}%
                 \iftabuscantokens
@@ -1673,7 +1673,7 @@
     \expandafter\@gobble \@startpbox    % gobbles \bgroup
 }% \tabu@startpboxquick
 \def\tabu@quick {\begingroup \iffalse{\fi \ifnum0=`}\fi
-    \toks@{}\def\tabu@stack{b}\tabu@collectbody \tabu@endquick
+    \toks@{}\def\tabu@events{b}\tabu@collectbody \tabu@endquick
 }% \tabu@quick
 \def\tabu@endquick {%
     \ifodd 1\ifx\tabu@end@envir\tabu@endtabu  \else
