@@ -11,7 +11,7 @@
  * distribution.
  */
 class Distribution {
-  public:
+public:
     enum Type : int {
         kLocal,  /**< this tensor is only stored on local process. */
         kGlobal, /**< a redundant copy of this tensor is stored on each process.
@@ -20,61 +20,66 @@ class Distribution {
                             processes. */
     };
 
-  private:
+private:
     Type type_;
 
-  public:
-    Distribution();
-    Distribution(Distribution::Type type);
-    Distribution::Type type() const;
+public:
+    Distribution() = delete;
 
-    virtual void get_local_data(shape_t global_shape, shape_t &local_shape,
-                                shape_t &local_start, shape_t &local_end);
-    virtual void get_local_data(int rank, shape_t global_shape,
-                                shape_t &local_shape, shape_t &local_start,
-                                shape_t &local_end);
-    virtual void get_local_shape(shape_t global_shape, shape_t &local_shape);
-    virtual void get_local_shape(int rank, shape_t global_shape,
-                                 shape_t &local_shape);
-    virtual size_t global_size(shape_t global_shape);
-    virtual size_t global_size(int rank, shape_t global_shape);
-    virtual size_t local_size(shape_t global_shape);
-    virtual size_t local_size(int rank, shape_t global_shape);
+    explicit Distribution(Distribution::Type type);
+
+    [[nodiscard]] Distribution::Type type() const;
+
+    virtual void
+    get_local_data(const shape_t &global_shape, shape_t &local_shape,
+                   shape_t &local_start, shape_t &local_end);
+
+    virtual void
+    get_local_shape(const shape_t &global_shape, shape_t &local_shape);
+
+    virtual size_t global_size(const shape_t &global_shape);
+
+    virtual size_t local_size(const shape_t &global_shape);
 };
 
 class DistributionLocal : public Distribution {
-  public:
+public:
     DistributionLocal();
 };
 
 class DistributionGlobal : public Distribution {
-  public:
+public:
     DistributionGlobal();
 };
 
 class DistributionCartesianBlock : public Distribution {
-  private:
+private:
     shape_t partition_;
     shape_t coordinate_;
     size_t ndim_;
 
-  public:
+public:
     DistributionCartesianBlock(shape_t partition, int rank);
-    shape_t partition() const;
-    shape_t coordinate() const;
-    shape_t coordinate(int rank) const;
-    size_t ndim() const;
 
-    virtual void get_local_data(shape_t global_shape, shape_t &local_shape,
-                                shape_t &local_start, shape_t &local_end);
-    virtual void get_local_data(int rank, shape_t global_shape,
-                                shape_t &local_shape, shape_t &local_start,
-                                shape_t &local_end);
-    virtual void get_local_shape(shape_t global_shape, shape_t &local_shape);
-    virtual void get_local_shape(int rank, shape_t global_shape,
-                                 shape_t &local_shape);
-    virtual size_t local_size(shape_t global_shape);
-    virtual size_t local_size(int rank, shape_t global_shape);
+    [[nodiscard]] shape_t partition() const;
+
+    [[nodiscard]] shape_t coordinate() const;
+
+    [[nodiscard]] shape_t coordinate(int rank) const;
+
+    [[nodiscard]] size_t ndim() const;
+
+    void get_local_data(const shape_t &global_shape, shape_t &local_shape,
+                        shape_t &local_start,
+                        shape_t &local_end) override;
+
+    void
+    get_local_shape(const shape_t &global_shape, shape_t &local_shape) override;
+
+    size_t local_size(const shape_t &global_shape) override;
+
+    std::tuple<int, int> process_fiber(size_t n);
+
 };
 
 #endif

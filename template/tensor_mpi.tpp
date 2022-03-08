@@ -536,9 +536,15 @@ Tensor<Ty> Tensor<Ty>::C() {
 
 template<typename Ty>
 Tensor<Ty> Tensor<Ty>::copy() const {
-    Tensor<Ty> ret(this->shape_global_, false, this->distribution_);
-    Util::memcpy(ret.data_, this->data_, this->size_ * sizeof(Ty));
-    return ret;
+    if (this->distribution_ != nullptr) {
+        Tensor<Ty> ret(this->distribution_, this->shape_global_, false);
+        Util::memcpy(ret.data_, this->data_, this->size_ * sizeof(Ty));
+        return ret;
+    } else {
+        Tensor<Ty> ret(this->shape_, false);
+        Util::memcpy(ret.data_, this->data_, this->size_ * sizeof(Ty));
+        return ret;
+    }
 }
 
 template<typename Ty>

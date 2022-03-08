@@ -86,7 +86,7 @@ void Operator<double>::matmulNN(double *C, double *A, double *B, size_t m,
 template<>
 void Operator<double>::matmulNT(double *C, double *A, double *B, size_t m,
                                 size_t n, size_t k) {
-    Summary::start(__func__, 2ll * m * n * k);
+    Summary::start(METHOD_NAME, 2ll * m * n * k);
     double alpha = 1.0;
     int lda = (int) m;
     int ldb = (int) n;
@@ -95,5 +95,5 @@ void Operator<double>::matmulNT(double *C, double *A, double *B, size_t m,
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, (int) m, (int) n,
                 (int) k,
                 alpha, A, lda, B, ldb, beta, C, ldc);
-    Summary::end(__func__);
+    Summary::end(METHOD_NAME);
 }

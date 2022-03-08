@@ -6,13 +6,14 @@
 #include <vector>
 
 namespace Algorithm {
-namespace GRQI {
-template <typename T>
-std::tuple<std::vector<Tensor<T>>, double>
-decompose(const Tensor<T> &, const std::vector<Tensor<T>> &, double);
-}; // namespace GRQI
+    namespace Tucker {
+        template<typename Ty>
+        std::tuple<Tensor<Ty>, std::vector<Tensor<Ty>>>
+        HOOI_ALS(const Tensor<Ty> &A, const shape_t R,
+                 const std::vector<Tensor<Ty>> &U_0);
+    }; // namespace GRQI
 }; // namespace Algorithm
 
-#include "algorithm/grqi.tpp"
+//#include "algorithm/tucker/hooi_als.tpp"
 
 #endif

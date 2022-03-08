@@ -5,7 +5,7 @@ void Operator<Ty>::reorder_from_gather_cartesian_block(Ty *A,
                                                        const shape_t &shape,
                                                        const shape_t &partition,
                                                        int *displs) {
-    Summary::start(__func__);
+    Summary::start(METHOD_NAME);
     const size_t kSize = Util::calc_size(shape);
     const size_t kNdim = shape.size();
     const size_t kMPISize = Util::calc_size(partition);
@@ -36,7 +36,7 @@ void Operator<Ty>::reorder_from_gather_cartesian_block(Ty *A,
     }
     Operator<Ty>::free(B);
     Operator<int>::free(displs_);
-    Summary::end(__func__);
+    Summary::end(METHOD_NAME);
 }
 
 template<typename Ty>
@@ -44,7 +44,7 @@ void Operator<Ty>::reorder_for_scatter_cartesian_block(Ty *A,
                                                        const shape_t &shape,
                                                        const shape_t &partition,
                                                        int *displs) {
-    Summary::start(__func__);
+    Summary::start(METHOD_NAME);
     const size_t kSize = Util::calc_size(shape);
     const size_t kNdim = shape.size();
     const size_t kMPISize = Util::calc_size(partition);
@@ -75,5 +75,5 @@ void Operator<Ty>::reorder_for_scatter_cartesian_block(Ty *A,
     }
     Operator<Ty>::free(B);
     Operator<int>::free(displs_);
-    Summary::end(__func__);
+    Summary::end(METHOD_NAME);
 }
