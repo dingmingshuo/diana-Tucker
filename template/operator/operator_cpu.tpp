@@ -17,15 +17,27 @@ void Operator<Ty>::mcpy(Ty *dest, Ty *src, size_t len) {
 }
 
 template<typename Ty>
+void Operator<Ty>::transpose(Ty *B, Ty *A, size_t m, size_t n) {
+#ifdef DIANA_OPENMP
+#pragma omp parallel for default(none) shared(B, A, m, n)
+#endif
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = 0; j < n; j++) {
+            B[j + i * n] = A[i + j * m];
+        }
+    }
+}
+
+template<typename Ty>
 void Operator<Ty>::eye(Ty *A, size_t M) {
 #ifdef DIANA_OPENMP
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(A, M)
 #endif
     for (size_t i = 0; i < M * M; i++) {
         A[i] = 0;
     }
 #ifdef DIANA_OPENMP
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(A, M)
 #endif
     for (size_t i = 0; i < M; i++) {
         A[i * M + i] = 1;

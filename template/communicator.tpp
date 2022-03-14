@@ -1,8 +1,8 @@
 #include "def.hpp"
 #include "logger.hpp"
 #include "summary.hpp"
-#include <stdint.h>
-#include <limits.h>
+#include <cstdint>
+#include <climits>
 
 #if SIZE_MAX == UCHAR_MAX
 #define MPI_SIZE_T MPI_UNSIGNED_CHAR
@@ -126,13 +126,22 @@ void Communicator<Ty>::reduce_scatter(Ty *sendbuf, Ty *recvbuf,
 
 template<class Ty>
 void
-Communicator<Ty>::allgather(Ty *sendbuf, int sendcount, Ty *recvbuf,
+Communicator<Ty>::allgather(const Ty *sendbuf, int sendcount, Ty *recvbuf,
                             MPI_Comm comm) {
     Summary::start(METHOD_NAME);
-    int size_allgather;
-    MPI_Comm_size(MPI_COMM_WORLD, &size_allgather);
     MPI_Allgather(sendbuf, sendcount, mpi_type(), recvbuf,
-                  size_allgather * sendcount, comm);
+                  sendcount, mpi_type(), comm);
+    Summary::end(METHOD_NAME);
+}
+
+template<class Ty>
+void
+Communicator<Ty>::allgatherv(const Ty *sendbuf, int sendcount, Ty *recvbuf,
+                             const int *recvcounts, const int *displs,
+                             MPI_Comm comm) {
+    Summary::start(METHOD_NAME);
+    MPI_Allgatherv(sendbuf, sendcount, mpi_type(), recvbuf, recvcounts, displs,
+                   mpi_type(), comm);
     Summary::end(METHOD_NAME);
 }
 

@@ -3,36 +3,9 @@
 #include "summary.hpp"
 
 #include <cmath>
+#include <iostream>
 
 namespace Function {
-    template<typename Ty>
-    Tensor<Ty> inverse(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
-            assert(A.is_matrix());
-            assert(A.shape()[0] == A.shape()[1]);
-            Tensor<Ty> ret(A.shape());
-            A.op()->inverse(ret.data(), A.data(), A.shape()[0]);
-            return ret;
-        }
-        error("Invalid input or not implemented yet.");
-    }
-
-    template<typename Ty>
-    std::tuple<Tensor<Ty>, Tensor<Ty>> reduced_LQ(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
-            assert(A.is_matrix());
-            assert(A.shape()[0] <= A.shape()[1]);
-            size_t m = A.shape()[0];
-            size_t n = A.shape()[1];
-            Tensor<Ty> L({m, m}, true);
-            Tensor<Ty> Q({m, n}, true);
-            A.op()->LQ(L.data(), Q.data(), A.data(), A.shape()[0],
-                       A.shape()[1]);
-            return std::make_tuple(L, Q);
-        }
-        error("Invalid input or not implemented yet.");
-    }
-
     /**
      * @brief Calculate \f$ \bm{\mathcal{A}}_{(n)} \bm{\mathcal{A}}_{(n)}^T \f$,
      * where \f$ \bm{\mathcal{A}} \f$ is a tensor.
@@ -81,12 +54,12 @@ namespace Function {
             // Allocate A_buf.
             Ty *A_buf = A.op()->alloc(A.size());
             // Initialize data transpose.
-            int send_to_proc_id =
+            const int send_to_proc_id =
                     ((int) new_rank - 1 + (int) kParN) % (int) kParN;
-            int recv_from_proc_id = ((int) new_rank + 1) % (int) kParN;
+            const int recv_from_proc_id = ((int) new_rank + 1) % (int) kParN;
             // Matricization
-            A.op()->tenmat(databuf[0], data_A, A.shape(), n);
-            A.op()->mcpy(A_buf, databuf[0], A.size());
+            A.op()->tenmat(A_buf, data_A, A.shape(), n);
+            A.op()->mcpy(databuf[0], A_buf, A.size());
             // Do gram
             MPI_Request *request_send = A.comm()->new_request();
             MPI_Request *request_recv = A.comm()->new_request();
@@ -103,12 +76,6 @@ namespace Function {
                                     databuf[(i + 1) % 2],
                                     (int) max_size,
                                     recv_from_proc_id, comm_fiber);
-                    send_to_proc_id =
-                            ((int) send_to_proc_id - 1 + (int) kParN) %
-                            (int) kParN;
-                    recv_from_proc_id =
-                            ((int) recv_from_proc_id + 1) %
-                            (int) kParN;
                 }
                 A.op()->matmulNT(gram_buf +
                                  gram_buf_start[gram_buf_point] * kLocalShapeN,
@@ -150,18 +117,6 @@ namespace Function {
     }
 
 
-    template<typename Ty>
-    Tensor<Ty> gram(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
-            assert(A.is_matrix());
-            size_t M = A.shape()[0];
-            size_t N = A.shape()[1];
-            Tensor<Ty> ret({M, M}, false);
-            A.op()->matmulNT(ret.data(), A, A, M, M, N);
-            return ret;
-        }
-    }
-
     /**
      * @brief  Calculate \f$ \bm{\mathcal{A}} \times_n \bm{M} \f$, where
      * \f$ \bm{\mathcal{A}} \f$ is a tensor and \f$ \bm{M} \f$ is a matrix.
@@ -176,7 +131,8 @@ namespace Function {
     Tensor<Ty> ttm(const Tensor<Ty> &A, const Tensor<Ty> &M, size_t n) {
         if (A.distribution()->type() ==
             Distribution::Type::kCartesianBlock &&
-            M.distribution()->type() == Distribution::Type::kGlobal) {
+            (M.distribution() == nullptr ||
+             M.distribution()->type() == Distribution::Type::kGlobal)) {
             // Initialization
             Summary::start(METHOD_NAME);
             assert(M.is_matrix());
@@ -185,7 +141,7 @@ namespace Function {
             shape_t coord = distrib->coordinate();
             shape_t par = distrib->partition();
             size_t row_length = M.shape()[0];
-            size_t col_length = M.shape()[1];
+            size_t col_length = M.shape()[1]; // M is of shape row_length * col_length.
             size_t col_local = A.shape()[n];
             size_t col_begin = DIANA_CEILDIV(col_length * coord[n], par[n]);
             size_t col_end = DIANA_CEILDIV(col_length * (coord[n] + 1),
@@ -211,23 +167,22 @@ namespace Function {
             Tensor<Ty> ret(A.distribution(), new_shape, false);
             Ty *data_ret = ret.data();
             Ty *data_ret_buf = ret.op()->alloc(ret.size());
-            int *recvcounts = new int[par[n]];
+            auto *recvcounts = Operator<int>::alloc(par[n]);
             for (size_t i = 0; i < par[n]; i++) {
                 recvcounts[i] =
-                        (int) DIANA_CEILDIV(row_length * (coord[i] + 1),
-                                            par[n]) -
-                        (int) DIANA_CEILDIV(row_length * coord[i], par[n]);
+                        (int) DIANA_CEILDIV(row_length * (i + 1), par[n]) -
+                        (int) DIANA_CEILDIV(row_length * i, par[n]);
                 recvcounts[i] *= (int) remain_size;
             }
             ret.comm()->reduce_scatter(data_Anew, data_ret_buf, recvcounts,
-                                       MPI_SUM,
-                                       comm_new);
+                                       MPI_SUM, comm_new);
             // Tensorization
             ret.op()->mattten(data_ret, data_ret_buf, ret.shape(), n);
             // Free spaces
             A.op()->free(data_B);
             A.op()->free(data_Anew);
             A.op()->free(data_ret_buf);
+            Operator<int>::free(recvcounts);
             Summary::end(METHOD_NAME);
             return ret;
         }
@@ -347,7 +302,6 @@ namespace Function {
                                      ret.data(),
                                      (int) ret.size(), proc);
                 // Reorder back data
-                tick;
                 A.op()->reorder_from_gather_cartesian_block(
                         A.data(), A.shape(),
                         ((DistributionCartesianBlock *) distribution)->partition(),

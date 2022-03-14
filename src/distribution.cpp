@@ -1,13 +1,14 @@
 #include "distribution.hpp"
 #include "def.hpp"
 #include "logger.hpp"
+#include <tuple>
 
 void distribution_assert_valid_input_(const shape_t &global_shape,
                                       const shape_t &local_shape,
                                       const shape_t &local_start = shape_t(),
                                       const shape_t &local_end = shape_t()) {
 #ifndef PERFORMANCE_MODE
-    assert(global_shape.empty());
+    assert(!global_shape.empty());
     assert(local_shape.empty());
     assert(local_start.empty());
     assert(local_end.empty());
@@ -55,6 +56,11 @@ size_t Distribution::local_size(const shape_t &local_shape) {
         size *= dim;
     }
     return size;
+}
+
+size_t Distribution::local_size(int rank, const shape_t &local_shape) {
+    DIANA_UNUSED(rank);
+    return Distribution::local_size(local_shape);
 }
 
 DistributionLocal::DistributionLocal()
@@ -134,6 +140,20 @@ size_t DistributionCartesianBlock::local_size(const shape_t &global_shape) {
         size_t start = DIANA_CEILDIV(global_shape[i] * this->coordinate_[i],
                                      this->partition_[i]);
         size_t end = DIANA_CEILDIV(global_shape[i] * (this->coordinate_[i] + 1),
+                                   this->partition_[i]);
+        size *= (end - start);
+    }
+    return size;
+}
+
+size_t DistributionCartesianBlock::local_size(int rank,
+                                              const shape_t &global_shape) {
+    size_t size = 1;
+    auto coord = DistributionCartesianBlock::coordinate(rank);
+    for (size_t i = 0; i < this->ndim_; i++) {
+        size_t start = DIANA_CEILDIV(global_shape[i] * coord[i],
+                                     this->partition_[i]);
+        size_t end = DIANA_CEILDIV(global_shape[i] * (coord[i] + 1),
                                    this->partition_[i]);
         size *= (end - start);
     }

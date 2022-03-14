@@ -40,6 +40,8 @@ public:
     virtual size_t global_size(const shape_t &global_shape);
 
     virtual size_t local_size(const shape_t &global_shape);
+
+    virtual size_t local_size(int rank, const shape_t &global_shape);
 };
 
 class DistributionLocal : public Distribution {
@@ -77,6 +79,8 @@ public:
     get_local_shape(const shape_t &global_shape, shape_t &local_shape) override;
 
     size_t local_size(const shape_t &global_shape) override;
+    
+    size_t local_size(int rank, const shape_t &global_shape) override;
 
     std::tuple<int, int> process_fiber(size_t n);
 

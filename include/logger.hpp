@@ -25,7 +25,7 @@
     do {                                                                       \
         if (LOG_LEVEL <= 0) {                                                  \
             std::cerr << "[" COLOR_DEBUG "DEBUG" COLOR_RESET " "               \
-                      << __FUNCTION__ << ":" << __LINE__ << "] " << #x         \
+                      << __FILE__ << ":" << __LINE__ << "] " << #x             \
                       << " = " << (x) << std::endl;                            \
         }                                                                      \
     } while (0)
@@ -34,22 +34,29 @@
     do {                                                                       \
         if (LOG_LEVEL <= 0) {                                                  \
             std::cerr << "[" COLOR_DEBUG "TICK" COLOR_RESET " "                \
-                      << __FUNCTION__ << ":" << __LINE__ << "] " << std::endl; \
+                      << __FILE__ << ":" << __LINE__ << "] " << std::endl;     \
         }                                                                      \
     } while (0)
 
 #define info(x)                                                                \
     do {                                                                       \
         if (LOG_LEVEL <= 1) {                                                  \
-            std::cerr << "[" COLOR_INFO "INFO" COLOR_RESET " " << __FUNCTION__ \
+            std::cerr << "[" COLOR_INFO "INFO" COLOR_RESET " " << __FILE__     \
                       << ":" << __LINE__ << "] " << (x) << std::endl;          \
+        }                                                                      \
+    } while (0)
+
+#define output(x)                                                              \
+    do {                                                                       \
+        if (mpi_rank() == 0) {                                                 \
+            std::cerr << (x) << std::endl;                                     \
         }                                                                      \
     } while (0)
 
 #define warn(x)                                                                \
     do {                                                                       \
         if (LOG_LEVEL <= 2) {                                                  \
-            std::cerr << "[" COLOR_WARN "WARN" COLOR_RESET " " << __FUNCTION__ \
+            std::cerr << "[" COLOR_WARN "WARN" COLOR_RESET " " << __FILE__     \
                       << ":" << __LINE__ << "] " << (x) << std::endl;          \
         }                                                                      \
     } while (0)
@@ -59,7 +66,7 @@
         if (LOG_LEVEL <= 2) {                                                  \
             if (!(x)) {                                                        \
                 std::cerr << "[" COLOR_WARN "WARN" COLOR_RESET " "             \
-                          << __FUNCTION__ << ":" << __LINE__ << "] " << #x     \
+                          << __FILE__ << ":" << __LINE__ << "] " << #x         \
                           << std::endl;                                        \
             }                                                                  \
         }                                                                      \
@@ -69,7 +76,7 @@
     do {                                                                       \
         if (LOG_LEVEL <= 3) {                                                  \
             std::cerr << "[" COLOR_ERROR "ERROR" COLOR_RESET " "               \
-                      << __FUNCTION__ << ":" << __LINE__ << "] " << (x)        \
+                      << __FILE__ << ":" << __LINE__ << "] " << (x)            \
                       << std::endl;                                            \
             exit(-3);                                                          \
             __builtin_unreachable();                                           \
@@ -82,7 +89,7 @@
         if (LOG_LEVEL <= 3) {                                                  \
             if (!(x)) {                                                        \
                 std::cerr << "[" COLOR_ERROR "ERROR" COLOR_RESET " "           \
-                          << __FUNCTION__ << ":" << __LINE__ << "] " << #x     \
+                          << __FILE__ << ":" << __LINE__ << "] " << #x         \
                           << std::endl;                                        \
                 exit(-3);                                                      \
                 __builtin_unreachable();                                       \
@@ -94,7 +101,7 @@
     do {                                                                       \
         if (LOG_LEVEL <= 4) {                                                  \
             std::cerr << "[" COLOR_FATAL "FATAL" COLOR_RESET " "               \
-                      << __FUNCTION__ << ":" << __LINE__ << "] " << (x)        \
+                      << __FILE__ << ":" << __LINE__ << "] " << (x)            \
                       << std::endl;                                            \
             exit(-4);                                                          \
             __builtin_unreachable();                                           \
@@ -107,7 +114,7 @@
         if (LOG_LEVEL <= 4) {                                                  \
             if (!(x)) {                                                        \
                 std::cerr << "[" COLOR_FATAL "ASSERTION FAIL" COLOR_RESET " "  \
-                          << __FUNCTION__ << ":" << __LINE__ << "] " << #x     \
+                          << __FILE__ << ":" << __LINE__ << "] " << #x         \
                           << std::endl;                                        \
                 exit(-4);                                                      \
                 __builtin_unreachable();                                       \
