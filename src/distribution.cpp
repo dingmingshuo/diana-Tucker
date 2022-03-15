@@ -1,6 +1,7 @@
 #include "distribution.hpp"
 #include "def.hpp"
 #include "logger.hpp"
+#include "communicator.hpp"
 #include <tuple>
 
 void distribution_assert_valid_input_(const shape_t &global_shape,
@@ -83,6 +84,11 @@ DistributionCartesianBlock::DistributionCartesianBlock(shape_t partition,
     for (size_t i = 0; i < this->ndim_; i++) {
         assert(this->coordinate_[i] < this->partition_[i]);
         assert(this->partition_[i] > 0);
+    }
+    for (size_t n = 0; n < this->ndim_; n++) {
+        auto[new_color, new_rank] = this->process_fiber(n);
+        this->process_fiber_comm_.push_back(
+                Communicator<void>::comm_split(new_color, new_rank));
     }
 }
 
@@ -176,4 +182,8 @@ std::tuple<int, int> DistributionCartesianBlock::process_fiber(size_t n) {
         }
     }
     return std::make_tuple(new_color, new_rank);
+}
+
+MPI_Comm DistributionCartesianBlock::process_fiber_comm(size_t n) {
+    return this->process_fiber_comm_[n];
 }

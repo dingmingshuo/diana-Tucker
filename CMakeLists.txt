@@ -75,7 +75,7 @@ include_directories(
 
 
 # Set CXX_FLAGS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -W -Wall -Wextra -Wconversion -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -W -Wall -Wextra -Wconversion")
 
 
 # define USE_MPI

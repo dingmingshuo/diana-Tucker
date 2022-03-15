@@ -11,16 +11,22 @@ namespace Algorithm ::Tucker {
         auto YYt = Function::gram<Ty>(Y, n);
         auto L = L_initial.copy();
         for (size_t iter = 0; iter < max_iter; iter++) {
-            auto G = Function::matmulTN<Ty>(L, L);
-            auto G_inv = Function::inverse<Ty>(G);
-            auto LG_inv = Function::matmulNN<Ty>(L, G_inv);
+            Tensor<double> LG_inv;
+            if (iter == 0) {
+                /*
+                 * Because as a factor matrix of Tucker HOOI decomposition,
+                 * L_initial is always column orthogonal, so G_inv is always an
+                 * identity matrix. Thus calculating of G_inv could be omitted.
+                */
+                LG_inv = L;
+            } else {
+                auto G = Function::matmulTN<Ty>(L, L);
+                auto G_inv = Function::inverse<Ty>(G);
+                LG_inv = Function::matmulNN<Ty>(L, G_inv);
+            }
             auto YYtLG_inv = Function::matmulNN<Ty>(YYt, LG_inv);
             auto G_R = Function::matmulTN<Ty>(LG_inv, YYtLG_inv);
             auto G_R_inv = Function::inverse<Ty>(G_R);
-//            if (mpi_rank() == 0) {
-//                auto I = Function::matmulNN(G_R, G_R_inv);
-//                I.print();
-//            }
             L = Function::matmulNN<Ty>(YYtLG_inv, G_R_inv);
         }
         auto[q, r] = Function::reduced_QR(L);
@@ -45,7 +51,7 @@ namespace Algorithm ::Tucker {
             U.push_back(q);
         }
         // Start iteration.
-        auto A_norm = (long double) Function::fnorm<Ty>(A);
+        auto A_norm = Function::fnorm<Ty>(A);
         output("||A||_F = " + std::to_string(A_norm));
         size_t k = 0;
         for (size_t iter = 0; iter < max_iter; iter++) {
@@ -59,7 +65,7 @@ namespace Algorithm ::Tucker {
                 for (size_t i = 0; i < kN; i++) {
                     if (i == n) continue;
                     auto Ut = Function::transpose<Ty>(U[i]);
-                    Y = Function::ttm<Ty>(Y, Ut, i);
+                    Y = Function::ttm<Ty>(Y, Ut, i); // TODO: ttmNT
                 }
                 // ALS
                 U[n] = Algorithm::Tucker::ALS_(Y, n, U[n]);
@@ -69,7 +75,7 @@ namespace Algorithm ::Tucker {
                 auto Ut = Function::transpose<Ty>(U[n]);
                 G = Function::ttm<Ty>(G, Ut, n);
             }
-            auto G_norm = (long double) Function::fnorm<Ty>(G);
+            auto G_norm = Function::fnorm<Ty>(G);
             output("||G||_F = " + std::to_string(G_norm));
             output("Residual: sqrt(1 - ||G||_F^2 / ||A||_F^2) = " +
                    std::to_string(

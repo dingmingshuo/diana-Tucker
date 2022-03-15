@@ -82,6 +82,7 @@ template<>
 void
 Operator<double>::inverse(double *C, double *A, size_t m) {
 #ifdef DIANA_LAPACK
+    Summary::start(METHOD_NAME);
     auto M = (lapack_int) m;
     lapack_int LDA = M;
     lapack_int INFO;
@@ -92,17 +93,7 @@ Operator<double>::inverse(double *C, double *A, size_t m) {
     INFO = LAPACKE_dgetri(LAPACK_COL_MAJOR, M, C, LDA, IPIV);
     checkwarn(INFO == 0);
     Operator<lapack_int>::free(IPIV);
-//    auto M = (lapack_int) m;
-//    lapack_int LDA = M;
-//    lapack_int INFO;
-//    lapack_int *IPIV = Operator<lapack_int>::alloc(m);
-//    Operator<double>::mcpy(C, A, m * m);
-//    char UPLO = 'U';
-//    INFO = LAPACKE_dsytrf(LAPACK_COL_MAJOR, UPLO, M, C, LDA, IPIV);
-//    checkwarn(INFO == 0);
-//    INFO = LAPACKE_dsytri(LAPACK_COL_MAJOR, UPLO, M, C, LDA, IPIV);
-//    checkwarn(INFO == 0);
-//    Operator<lapack_int>::free(IPIV);
+    Summary::end(METHOD_NAME);
 #else
     fatal("Cannot calculate inverse without BLAS!");
 #endif
@@ -111,6 +102,7 @@ Operator<double>::inverse(double *C, double *A, size_t m) {
 template<>
 void Operator<double>::LQ(double *L, double *Q, double *A, size_t m, size_t n) {
 #ifdef DIANA_LAPACK
+    Summary::start(METHOD_NAME);
     auto M = (lapack_int) m;
     auto N = (lapack_int) n;
     lapack_int LDA = M;
@@ -127,6 +119,7 @@ void Operator<double>::LQ(double *L, double *Q, double *A, size_t m, size_t n) {
     INFO = LAPACKE_dorglq(LAPACK_COL_MAJOR, M, N, K, Q, LDA, TAU);
     checkwarn(INFO == 0);
     Operator<double>::free(TAU);
+    Summary::end(METHOD_NAME);
 #else
     fatal("Cannot calculate inverse without BLAS!");
 #endif
@@ -135,6 +128,7 @@ void Operator<double>::LQ(double *L, double *Q, double *A, size_t m, size_t n) {
 template<>
 void Operator<double>::QR(double *Q, double *R, double *A, size_t m, size_t n) {
 #ifdef DIANA_LAPACK
+    Summary::start(METHOD_NAME);
     auto M = (lapack_int) m;
     auto N = (lapack_int) n;
     lapack_int LDA = M;
@@ -151,6 +145,7 @@ void Operator<double>::QR(double *Q, double *R, double *A, size_t m, size_t n) {
     INFO = LAPACKE_dorgqr(LAPACK_COL_MAJOR, M, N, K, Q, LDA, TAU);
     checkwarn(INFO == 0);
     Operator<double>::free(TAU);
+    Summary::end(METHOD_NAME);
 #else
     fatal("Cannot calculate inverse without BLAS!");
 #endif

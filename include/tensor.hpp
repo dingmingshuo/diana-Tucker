@@ -119,6 +119,8 @@ public:
 
     inline const shape_t &shape_global() const;
 
+    inline const size_t size_global() const;
+
     Tensor<Ty> gather();
 
     Tensor<Ty> scatter(Distribution *distribution, int proc);

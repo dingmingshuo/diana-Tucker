@@ -26,7 +26,7 @@ namespace Function {
             const size_t kLocalShapeN = A.shape()[n];
             // Split communicator.
             auto[new_color, new_rank] = distrib->process_fiber(n);
-            MPI_Comm comm_fiber = A.comm()->comm_split(new_color, new_rank);
+            MPI_Comm comm_fiber = distrib->process_fiber_comm(n);
             // Allocate double buffer.
             size_t max_size = A.size();
             Ty *data_A = A.data();
@@ -118,6 +118,142 @@ namespace Function {
 
 
     /**
+     * @brief Calculate \f$ \bm{\mathcal{A}}_{(n)} \bm{\mathcal{B}}_{(n)}^T \f$,
+     * where \f$ \bm{\mathcal{A}} \f$ and \f$ \bm{\mathcal{B}} \f$ are tensors.
+     * @tparam Ty
+     * @param A
+     * @param B
+     * @param n
+     * @return
+     */
+    template<typename Ty>
+    Tensor<Ty> ttt_except(const Tensor<Ty> &A, const Tensor<Ty> &B, size_t n) {
+        if (A.distribution()->type() == Distribution::Type::kCartesianBlock
+            ||
+            B.distribution()->type() == Distribution::Type::kCartesianBlock) {
+            // TODO: Assertion
+            // Let A bigger, thus we could only transport data of B.
+            bool swap_flag = false;
+            if (A.size_global() < B.size_global()) {
+                std::swap(A, B);
+                swap_flag = true;
+            }
+            // Initialization.
+            auto *distrib = (DistributionCartesianBlock *) A.distribution();
+            shape_t par = distrib->partition();
+            shape_t coord = distrib->coordinate();
+            const size_t kParN = par[n];
+            const size_t kAGlobalShapeN = A.shape_global()[n];
+            const size_t kALocalShapeN = A.shape()[n];
+            const size_t kBGlobalShapeN = B.shape_global()[n];
+            const size_t kBLocalShapeN = B.shape()[n];
+            // Split communicator.
+            auto[new_color, new_rank] = distrib->process_fiber(n);
+            MPI_Comm comm_fiber = distrib->process_fiber_comm(n);
+            // Allocate double buffer.
+            size_t max_size = B.size();
+            Ty *data_A = A.data();
+            Ty *data_B = B.data();
+            Ty *databuf[2]; // Double buffer
+            Communicator<size_t>::allreduce_inplace(&max_size, 1,
+                                                    MPI_MAX,
+                                                    comm_fiber); // TODO: Optimize
+            databuf[0] = B.op()->alloc(max_size);
+            databuf[1] = B.op()->alloc(max_size);
+            // Allocate gram_buffer.
+            const size_t row_length = kALocalShapeN;
+            const size_t B_row_length = kBLocalShapeN;
+            const size_t col_length = A.size() / kALocalShapeN;
+            size_t *all_B_row_length = Operator<size_t>::alloc(kParN);
+            size_t *gram_buf_start = Operator<size_t>::alloc(kParN);
+            size_t gram_buf_size;
+            auto gram_buf_point = (size_t) new_rank;
+            Communicator<size_t>::allgather(&B_row_length, 1, all_B_row_length,
+                                            comm_fiber); // TODO: Optimize
+            gram_buf_start[0] = 0;
+            for (size_t i = 1; i < kParN; i++) {
+                gram_buf_start[i] =
+                        gram_buf_start[i - 1] + all_B_row_length[i - 1];
+            }
+            gram_buf_size = kALocalShapeN * kBGlobalShapeN;
+            Ty *gram_buf = A.op()->alloc(gram_buf_size);
+            // Allocate A_buf.
+            Ty *A_buf = A.op()->alloc(A.size());
+            // Matricization
+            // TODO: Local gram kernel.
+            A.op()->tenmat(A_buf, data_A, A.shape(), n);
+            B.op()->tenmat(databuf[0], data_B, B.shape(), n);
+            // Initialize data transpose.
+            // TODO: check MPI.
+            const int send_to_proc_id =
+                    ((int) new_rank - 1 + (int) kParN) % (int) kParN;
+            const int recv_from_proc_id = ((int) new_rank + 1) % (int) kParN;
+            // Do gram
+            MPI_Request *request_send = A.comm()->new_request();
+            MPI_Request *request_recv = A.comm()->new_request();
+            for (size_t i = 0; i < kParN; i++) {
+                if (i != 0) {
+                    A.comm()->wait(request_send);
+                    A.comm()->wait(request_recv);
+                }
+                if (i != kParN - 1) {
+                    //TODO: check i.
+                    A.comm()->isend(request_send, databuf[i % 2],
+                                    (int) max_size,
+                                    send_to_proc_id, comm_fiber);
+                    A.comm()->irecv(request_recv,
+                                    databuf[(i + 1) % 2],
+                                    (int) max_size,
+                                    recv_from_proc_id, comm_fiber);
+                }
+                A.op()->matmulNT(gram_buf +
+                                 gram_buf_start[gram_buf_point] * kALocalShapeN,
+                                 A_buf, databuf[i % 2], row_length,
+                                 all_B_row_length[gram_buf_point], col_length);
+                gram_buf_point = (gram_buf_point + 1) % kParN;
+            }
+            // Allreduce.
+            // TODO: optimize.
+            MPI_Comm comm_line = A.comm()->comm_split(new_rank, new_color);
+            // TODO: Not inplace?
+            A.comm()->allreduce_inplace(gram_buf, (int) gram_buf_size, MPI_SUM,
+                                        comm_line);
+            // Gather.
+            // TODO: pack !!!!
+            Tensor<Ty> gram({kAGlobalShapeN, kBGlobalShapeN}, false);
+            Ty *gram_data = gram.data();
+            int *recvcount = Operator<int>::alloc(kParN);
+            int *displs = Operator<int>::alloc(kParN);
+            for (size_t i = 0; i < kParN; i++) {
+                recvcount[i] = (int) all_B_row_length[i];
+                displs[i] = (int) gram_buf_start[i];
+            }
+            for (size_t i = 0; i < kBGlobalShapeN; i++) {
+                A.comm()->allgatherv(gram_buf + i * kALocalShapeN,
+                                     (int) kALocalShapeN,
+                                     gram_data + i * kAGlobalShapeN,
+                                     recvcount, displs, comm_fiber);
+            }
+            // Check swap_flag.
+            if (swap_flag) {
+                gram = Function::transpose<Ty>(gram);
+            }
+            // Free buffers.
+            A.op()->free(databuf[0]);
+            A.op()->free(databuf[1]);
+            Operator<size_t>::free(all_B_row_length);
+            Operator<size_t>::free(gram_buf_start);
+            A.op()->free(gram_buf);
+            A.op()->free(A_buf);
+            A.comm()->free_request(request_send);
+            A.comm()->free_request(request_recv);
+            return gram;
+        }
+        error("Invalid input or not implemented yet.");
+    }
+
+
+    /**
      * @brief  Calculate \f$ \bm{\mathcal{A}} \times_n \bm{M} \f$, where
      * \f$ \bm{\mathcal{A}} \f$ is a tensor and \f$ \bm{M} \f$ is a matrix.
      *
@@ -159,8 +295,7 @@ namespace Function {
                              data_M + col_begin * row_length,
                              remain_size, row_length, col_local);
             // Split communicator
-            auto[new_color, new_rank] = distrib->process_fiber(n);
-            MPI_Comm comm_new = A.comm()->comm_split(new_color, new_rank);
+            MPI_Comm comm_fiber = distrib->process_fiber_comm(n);
             // Do reduce-scatter
             shape_t new_shape = A.shape_global();
             new_shape[n] = row_length;
@@ -175,7 +310,7 @@ namespace Function {
                 recvcounts[i] *= (int) remain_size;
             }
             ret.comm()->reduce_scatter(data_Anew, data_ret_buf, recvcounts,
-                                       MPI_SUM, comm_new);
+                                       MPI_SUM, comm_fiber);
             // Tensorization
             ret.op()->mattten(data_ret, data_ret_buf, ret.shape(), n);
             // Free spaces

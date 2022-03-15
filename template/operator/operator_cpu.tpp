@@ -82,6 +82,7 @@ void Operator<Ty>::tenmat(Ty *B, Ty *A, const shape_t &shape, size_t n) {
  */
 template<typename Ty>
 void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
+    // TODO: optimize
     Summary::start(METHOD_NAME);
     size_t size = Util::calc_size(shape);
     size_t br = shape[n];            // Row block size of B.
@@ -113,6 +114,7 @@ void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
  */
 template<typename Ty>
 void Operator<Ty>::mattten(Ty *B, Ty *A, const shape_t &shape, size_t n) {
+    // TODO: optimize
     Summary::start(METHOD_NAME);
     size_t size = Util::calc_size(shape);
     size_t br = shape[n];            // Row block size of B.

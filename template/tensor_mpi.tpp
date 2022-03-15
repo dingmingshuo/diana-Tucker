@@ -379,6 +379,11 @@ inline const shape_t &Tensor<Ty>::shape_global() const {
     return this->shape_global_;
 }
 
+template<typename Ty>
+inline size_t Tensor<Ty>::size_global() const {
+    return this->size_global_;
+}
+
 /**
  * @brief Gather a distributed Tensor in one process to a local Tensor.
  *
