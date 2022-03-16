@@ -7,7 +7,35 @@ namespace Algorithm ::Tucker {
     template<typename Ty>
     Tensor<Ty> ALS_(const Tensor<Ty> &Y, size_t n, const Tensor<Ty> &L_initial,
                     size_t max_iter = 5) {
-        auto local = Function::gather(Y);
+        auto L = L_initial.copy();
+        for (size_t iter = 0; iter < max_iter; iter++) {
+            Tensor<double> LG_inv;
+            if (iter == 0) {
+                /*
+                 * Because as a factor matrix of Tucker HOOI decomposition,
+                 * L_initial is always column orthogonal, so G_inv is always an
+                 * identity matrix. Thus calculating of G_inv could be omitted.
+                */
+                LG_inv = L;
+            } else {
+                auto G = Function::matmulTN<Ty>(L, L);
+                auto G_inv = Function::inverse<Ty>(G);
+                LG_inv = Function::matmulNN<Ty>(L, G_inv);
+            }
+            auto G_invLt = Function::transpose<Ty>(LG_inv);
+            auto G_invLtY = Function::ttm<Ty>(Y, G_invLt, n);
+            auto YYtLG_inv = Function::ttt_except<Ty>(Y, G_invLtY, n);
+            auto G_R = Function::matmulTN<Ty>(LG_inv, YYtLG_inv);
+            auto G_R_inv = Function::inverse<Ty>(G_R);
+            L = Function::matmulNN<Ty>(YYtLG_inv, G_R_inv);
+        }
+        auto[q, r] = Function::reduced_QR(L);
+        return q;
+    }
+
+    template<typename Ty>
+    Tensor<Ty> ALS_YYt_(const Tensor<Ty> &Y, size_t n, const Tensor<Ty> &L_initial,
+                     size_t max_iter = 5) {
         auto YYt = Function::gram<Ty>(Y, n);
         auto L = L_initial.copy();
         for (size_t iter = 0; iter < max_iter; iter++) {
@@ -43,12 +71,16 @@ namespace Algorithm ::Tucker {
         output("Start Tucker::HOOI_ALS decomposition.. with max_iter = " +
                std::to_string(max_iter));
         // Initialize U.
+        auto distribution = new DistributionGlobal();
         std::vector<Tensor<Ty>> U;
         for (size_t n = 0; n < kN; n++) {
-            Tensor<double> U_rand({I[n], R[n]}, false);
+            Tensor<double> U_rand(distribution, {I[n], R[n]}, false);
             U_rand.randn();
             auto[q, r] = Function::reduced_QR < Ty > (U_rand);
             U.push_back(q);
+        }
+        for (size_t n = 0; n < kN; n++) {
+            U[n].sync(0);
         }
         // Start iteration.
         auto A_norm = Function::fnorm<Ty>(A);

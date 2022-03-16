@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 namespace Function {
     /**
@@ -17,6 +18,7 @@ namespace Function {
     template<typename Ty>
     Tensor<Ty> gram(const Tensor<Ty> &A, size_t n) {
         if (A.distribution()->type() == Distribution::Type::kCartesianBlock) {
+            Summary::start(METHOD_NAME);
             // Initialization.
             auto *distrib = (DistributionCartesianBlock *) A.distribution();
             shape_t par = distrib->partition();
@@ -111,6 +113,7 @@ namespace Function {
             A.op()->free(A_buf);
             A.comm()->free_request(request_send);
             A.comm()->free_request(request_recv);
+            Summary::end(METHOD_NAME);
             return gram;
         }
         error("Invalid input or not implemented yet.");
@@ -131,13 +134,13 @@ namespace Function {
         if (A.distribution()->type() == Distribution::Type::kCartesianBlock
             ||
             B.distribution()->type() == Distribution::Type::kCartesianBlock) {
-            // TODO: Assertion
-            // Let A bigger, thus we could only transport data of B.
-            bool swap_flag = false;
-            if (A.size_global() < B.size_global()) {
-                std::swap(A, B);
-                swap_flag = true;
+            Summary::start(METHOD_NAME);
+            for (size_t i = 0; i < A.ndim(); i++) {
+                if (i == n) continue;
+                assert(A.shape_global()[i] == B.shape_global()[i]);
+                assert(A.shape()[i] == B.shape()[i]);
             }
+            // TODO: swap(A, B)
             // Initialization.
             auto *distrib = (DistributionCartesianBlock *) A.distribution();
             shape_t par = distrib->partition();
@@ -161,14 +164,17 @@ namespace Function {
             databuf[0] = B.op()->alloc(max_size);
             databuf[1] = B.op()->alloc(max_size);
             // Allocate gram_buffer.
-            const size_t row_length = kALocalShapeN;
+            const size_t A_row_length = kALocalShapeN;
             const size_t B_row_length = kBLocalShapeN;
             const size_t col_length = A.size() / kALocalShapeN;
             size_t *all_B_row_length = Operator<size_t>::alloc(kParN);
+            size_t *all_A_row_length = Operator<size_t>::alloc(kParN);
             size_t *gram_buf_start = Operator<size_t>::alloc(kParN);
             size_t gram_buf_size;
             auto gram_buf_point = (size_t) new_rank;
             Communicator<size_t>::allgather(&B_row_length, 1, all_B_row_length,
+                                            comm_fiber); // TODO: Optimize
+            Communicator<size_t>::allgather(&A_row_length, 1, all_A_row_length,
                                             comm_fiber); // TODO: Optimize
             gram_buf_start[0] = 0;
             for (size_t i = 1; i < kParN; i++) {
@@ -208,7 +214,7 @@ namespace Function {
                 }
                 A.op()->matmulNT(gram_buf +
                                  gram_buf_start[gram_buf_point] * kALocalShapeN,
-                                 A_buf, databuf[i % 2], row_length,
+                                 A_buf, databuf[i % 2], A_row_length,
                                  all_B_row_length[gram_buf_point], col_length);
                 gram_buf_point = (gram_buf_point + 1) % kParN;
             }
@@ -224,9 +230,11 @@ namespace Function {
             Ty *gram_data = gram.data();
             int *recvcount = Operator<int>::alloc(kParN);
             int *displs = Operator<int>::alloc(kParN);
-            for (size_t i = 0; i < kParN; i++) {
-                recvcount[i] = (int) all_B_row_length[i];
-                displs[i] = (int) gram_buf_start[i];
+            recvcount[0] = (int) all_A_row_length[0];
+            displs[0] = 0;
+            for (size_t i = 1; i < kParN; i++) {
+                recvcount[i] = (int) all_A_row_length[i];
+                displs[i] = (int) displs[i - 1] + (int) all_A_row_length[i - 1];
             }
             for (size_t i = 0; i < kBGlobalShapeN; i++) {
                 A.comm()->allgatherv(gram_buf + i * kALocalShapeN,
@@ -234,10 +242,7 @@ namespace Function {
                                      gram_data + i * kAGlobalShapeN,
                                      recvcount, displs, comm_fiber);
             }
-            // Check swap_flag.
-            if (swap_flag) {
-                gram = Function::transpose<Ty>(gram);
-            }
+            // TODO: swap(A, B)
             // Free buffers.
             A.op()->free(databuf[0]);
             A.op()->free(databuf[1]);
@@ -247,6 +252,7 @@ namespace Function {
             A.op()->free(A_buf);
             A.comm()->free_request(request_send);
             A.comm()->free_request(request_recv);
+            Summary::end(METHOD_NAME);
             return gram;
         }
         error("Invalid input or not implemented yet.");
@@ -328,10 +334,12 @@ namespace Function {
     Tensor<Ty>
     ttmc(const Tensor<Ty> &A, const std::vector<Tensor<Ty>> &M,
          const std::vector<size_t> &idx) {
+        Summary::start(METHOD_NAME);
         assert(M.size() == idx.size());
         for (size_t i = 0; i < M.size(); i++) {
             A = ttm(A, M[i], idx[i]);
         }
+        Summary::end(METHOD_NAME);
         return A;
     }
 

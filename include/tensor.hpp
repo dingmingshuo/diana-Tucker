@@ -119,11 +119,13 @@ public:
 
     inline const shape_t &shape_global() const;
 
-    inline const size_t size_global() const;
+    inline size_t size_global() const;
 
     Tensor<Ty> gather();
 
     Tensor<Ty> scatter(Distribution *distribution, int proc);
+
+    void sync(int proc);
 
     Ty &operator[](size_t);
 

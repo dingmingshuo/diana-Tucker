@@ -5,7 +5,8 @@
 namespace Function {
     template<typename Ty>
     Tensor<Ty> matmulNN(const Tensor<Ty> &A, const Tensor<Ty> &B) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[1] == B.shape()[0]);
             size_t m = A.shape()[0];
@@ -20,7 +21,8 @@ namespace Function {
 
     template<typename Ty>
     Tensor<Ty> matmulNT(const Tensor<Ty> &A, const Tensor<Ty> &B) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[1] == B.shape()[1]);
             size_t m = A.shape()[0];
@@ -36,7 +38,8 @@ namespace Function {
 
     template<typename Ty>
     Tensor<Ty> matmulTN(const Tensor<Ty> &A, const Tensor<Ty> &B) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[0] == B.shape()[0]);
             size_t m = A.shape()[1];
@@ -51,7 +54,8 @@ namespace Function {
 
     template<typename Ty>
     Tensor<Ty> inverse(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[0] == A.shape()[1]);
             Tensor<Ty> ret(A.shape(), true);
@@ -63,7 +67,8 @@ namespace Function {
 
     template<typename Ty>
     std::tuple<Tensor<Ty>, Tensor<Ty>> reduced_LQ(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[0] <= A.shape()[1]);
             size_t m = A.shape()[0];
@@ -79,7 +84,8 @@ namespace Function {
 
     template<typename Ty>
     std::tuple<Tensor<Ty>, Tensor<Ty>> reduced_QR(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             assert(A.shape()[0] >= A.shape()[1]);
             size_t m = A.shape()[0];
@@ -95,7 +101,8 @@ namespace Function {
 
     template<typename Ty>
     Tensor<Ty> transpose(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             size_t m = A.shape()[0];
             size_t n = A.shape()[1];
@@ -109,7 +116,8 @@ namespace Function {
 
     template<typename Ty>
     Tensor<Ty> gram(const Tensor<Ty> &A) {
-        if (A.distribution() == nullptr) {
+        if (A.distribution() == nullptr ||
+            A.distribution()->type() == Distribution::Type::kGlobal) {
             assert(A.is_matrix());
             size_t M = A.shape()[0];
             size_t N = A.shape()[1];

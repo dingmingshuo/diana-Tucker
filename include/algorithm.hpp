@@ -9,7 +9,7 @@ namespace Algorithm {
     namespace Tucker {
         template<typename Ty>
         std::tuple<Tensor<Ty>, std::vector<Tensor<Ty>>>
-        HOOI_ALS(const Tensor<Ty> &A, const shape_t &R, size_t max_iter = 5);
+        HOOI_ALS(const Tensor<Ty> &A, const shape_t &R, size_t max_iter);
     }; // namespace GRQI
 }; // namespace Algorithm
 

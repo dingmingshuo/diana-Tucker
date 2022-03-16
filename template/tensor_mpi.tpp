@@ -401,6 +401,11 @@ Tensor<Ty> Tensor<Ty>::scatter(Distribution *distribution, int proc) {
 }
 
 template<typename Ty>
+void Tensor<Ty>::sync(int proc) {
+    this->comm_->bcast(this->data_, (int) this->size_, proc);
+}
+
+template<typename Ty>
 Ty &Tensor<Ty>::operator[](size_t index) {
     return this->data_[index];
 }
