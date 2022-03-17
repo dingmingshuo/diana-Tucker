@@ -12,11 +12,13 @@ void Operator<Ty>::free(Ty *A) { std::free(A); }
 
 template<typename Ty>
 void Operator<Ty>::mcpy(Ty *dest, Ty *src, size_t len) {
+    DIANA_OPERATOR_FUNC_START;
     Util::memcpy((void *) dest, (void *) src, sizeof(Ty) * len);
 }
 
 template<typename Ty>
 void Operator<Ty>::transpose(Ty *B, Ty *A, size_t m, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
 #ifdef DIANA_OPENMP
 #pragma omp parallel for default(none) shared(B, A, m, n)
 #endif
@@ -54,6 +56,7 @@ void Operator<Ty>::eye(Ty *A, size_t M) {
  */
 template<typename Ty>
 void Operator<Ty>::tenmat(Ty *B, Ty *A, const shape_t &shape, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     size_t size = Util::calc_size(shape);
     size_t br = shape[n];            // Row block size of B.
     size_t bc = 1;                   // Column block size of B.
@@ -81,8 +84,8 @@ void Operator<Ty>::tenmat(Ty *B, Ty *A, const shape_t &shape, size_t n) {
  */
 template<typename Ty>
 void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     // TODO: optimize
-    Summary::start(METHOD_NAME);
     size_t size = Util::calc_size(shape);
     size_t br = shape[n];            // Row block size of B.
     size_t bc = 1;                   // Column block size of B.
@@ -98,7 +101,6 @@ void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
             }
         }
     }
-    Summary::end(METHOD_NAME);
 }
 
 /**
@@ -113,8 +115,8 @@ void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
  */
 template<typename Ty>
 void Operator<Ty>::mattten(Ty *B, Ty *A, const shape_t &shape, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     // TODO: optimize
-    Summary::start(METHOD_NAME);
     size_t size = Util::calc_size(shape);
     size_t br = shape[n];            // Row block size of B.
     size_t bc = 1;                   // Column block size of B.
@@ -130,7 +132,6 @@ void Operator<Ty>::mattten(Ty *B, Ty *A, const shape_t &shape, size_t n) {
             }
         }
     }
-    Summary::end(METHOD_NAME);
 }
 
 template<typename Ty>
