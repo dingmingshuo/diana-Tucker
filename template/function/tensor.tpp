@@ -3,7 +3,6 @@
 #include "summary.hpp"
 
 #include <cmath>
-#include <iostream>
 #include <algorithm>
 
 namespace Function {

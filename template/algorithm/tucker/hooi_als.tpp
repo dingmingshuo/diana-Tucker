@@ -34,8 +34,9 @@ namespace Algorithm ::Tucker {
     }
 
     template<typename Ty>
-    Tensor<Ty> ALS_YYt_(const Tensor<Ty> &Y, size_t n, const Tensor<Ty> &L_initial,
-                     size_t max_iter = 5) {
+    Tensor<Ty>
+    ALS_YYt_(const Tensor<Ty> &Y, size_t n, const Tensor<Ty> &L_initial,
+             size_t max_iter = 5) {
         auto YYt = Function::gram<Ty>(Y, n);
         auto L = L_initial.copy();
         for (size_t iter = 0; iter < max_iter; iter++) {
@@ -76,7 +77,7 @@ namespace Algorithm ::Tucker {
         for (size_t n = 0; n < kN; n++) {
             Tensor<double> U_rand(distribution, {I[n], R[n]}, false);
             U_rand.randn();
-            auto[q, r] = Function::reduced_QR < Ty > (U_rand);
+            auto[q, r] = Function::reduced_QR<Ty>(U_rand);
             U.push_back(q);
         }
         for (size_t n = 0; n < kN; n++) {
@@ -91,16 +92,18 @@ namespace Algorithm ::Tucker {
                    " ...");
             // Step ++.
             k = k + 1;
+            auto Y_pre = A.copy();
             for (size_t n = 0; n < kN; n++) {
                 // TTMc
-                auto Y = A.copy();
-                for (size_t i = 0; i < kN; i++) {
-                    if (i == n) continue;
+                auto Y = Y_pre.copy();
+                for (size_t i = n + 1; i < kN; i++) {
                     auto Ut = Function::transpose<Ty>(U[i]);
                     Y = Function::ttm<Ty>(Y, Ut, i); // TODO: ttmNT
                 }
                 // ALS
                 U[n] = Algorithm::Tucker::ALS_(Y, n, U[n]);
+                auto Ut = Function::transpose<Ty>(U[n]);
+                Y_pre = Function::ttm<Ty>(Y_pre, Ut, n); // TODO: ttmNT
             }
             auto G = A.copy();
             for (size_t n = 0; n < kN; n++) {
