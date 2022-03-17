@@ -1,6 +1,5 @@
 #include "util.hpp"
 
-#include <iostream>
 #include "summary.hpp"
 
 template<typename Ty>

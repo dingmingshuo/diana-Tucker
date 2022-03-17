@@ -7,6 +7,8 @@
 
 void mpi_init();
 
+void mpi_init(int argc, char **argv);
+
 int mpi_rank();
 
 int mpi_size();
