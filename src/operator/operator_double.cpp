@@ -14,8 +14,8 @@ extern "C" {
 #else
 #ifdef DIANA_BLAS
 extern "C" {
-#include "cblas.h"
-#include "lapacke.h"
+#include "third_party/lapack/cblas.h"
+#include "third_party/lapack/lapacke.h"
 }
 #endif
 #endif
