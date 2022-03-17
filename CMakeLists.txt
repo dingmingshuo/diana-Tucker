@@ -60,8 +60,12 @@ set(SOURCES
         src/operator/operator_complex64.cpp
         src/communicator.cpp
         src/distribution.cpp
-        main.cpp
-        include/summary.hpp src/summary.cpp)
+        include/summary.hpp
+        src/summary.cpp
+        include/algorithm.hpp
+        template/algorithm/tucker/hooi_als.tpp
+        template/function/matrix.tpp
+        template/function/tensor.tpp)
 
 # Include directories
 include_directories(
@@ -71,7 +75,7 @@ include_directories(
 
 
 # Set CXX_FLAGS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3 -W -Wall -Wextra -Wconversion")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -W -Wall -Wextra -Wconversion")
 
 
 # define USE_MPI
@@ -131,7 +135,8 @@ else ()
 endif (USE_LAPACK)
 
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} main.cpp ${SOURCES})
+add_library(${PROJECT_NAME}-lib STATIC ${SOURCES})
 
 
 if (USE_MPI)
@@ -149,3 +154,8 @@ endif (USE_BLAS OR USE_LAPACK)
 if (USE_LAPACK)
     target_link_libraries(${PROJECT_NAME} PUBLIC "${LAPACK_LIBRARIES}")
 endif (USE_LAPACK)
+
+
+# subdirectory
+get_target_property(DIANA_LIBRARIES_LINKED ${PROJECT_NAME} LINK_LIBRARIES)
+add_subdirectory(tests)

@@ -2,6 +2,7 @@
 #define __DIANA_CORE_DISTRIBUTION_TENSOR_HPP__
 
 #include "def.hpp"
+#include <mpi.h>
 
 /**
  * @enum Distribution
@@ -40,6 +41,8 @@ public:
     virtual size_t global_size(const shape_t &global_shape);
 
     virtual size_t local_size(const shape_t &global_shape);
+
+    virtual size_t local_size(int rank, const shape_t &global_shape);
 };
 
 class DistributionLocal : public Distribution {
@@ -57,6 +60,7 @@ private:
     shape_t partition_;
     shape_t coordinate_;
     size_t ndim_;
+    std::vector<MPI_Comm> process_fiber_comm_;
 
 public:
     DistributionCartesianBlock(shape_t partition, int rank);
@@ -78,8 +82,11 @@ public:
 
     size_t local_size(const shape_t &global_shape) override;
 
+    size_t local_size(int rank, const shape_t &global_shape) override;
+
     std::tuple<int, int> process_fiber(size_t n);
 
+    MPI_Comm process_fiber_comm(size_t n);
 };
 
 #endif

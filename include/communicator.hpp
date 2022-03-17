@@ -22,15 +22,15 @@ public:
 
     ~Communicator();
 
-    [[nodiscard]] constexpr int rank() const;
+    [[nodiscard]] int rank() const;
 
-    [[nodiscard]] constexpr int size() const;
+    [[nodiscard]] int size() const;
 
     [[nodiscard]] constexpr static inline MPI_Datatype mpi_type();
 
     [[nodiscard]]  static inline MPI_Request *new_request();
 
-    [[nodiscard]]  static inline void free_request(MPI_Request *request);
+    static inline void free_request(MPI_Request *request);
 
     static MPI_Comm
     comm_split(int color, int rank, MPI_Comm comm = MPI_COMM_WORLD);
@@ -54,8 +54,12 @@ public:
     static void reduce_scatter(Ty *sendbuf, Ty *recvbuf, const int *recvcounts,
                                MPI_Op op, MPI_Comm comm = MPI_COMM_WORLD);
 
-    static void allgather(Ty *sendbuf, int sendcount, Ty *recvbuf,
+    static void allgather(const Ty *sendbuf, int sendcount, Ty *recvbuf,
                           MPI_Comm comm = MPI_COMM_WORLD);
+
+    static void allgatherv(const Ty *sendbuf, int sendcount, Ty *recvbuf,
+                           const int *recvcounts, const int *displs,
+                           MPI_Comm comm = MPI_COMM_WORLD);
 
     static void
     gatherv(Ty *sendbuf, int sendcount, Ty *recvbuf, const int *recvcounts,
@@ -69,11 +73,11 @@ public:
 
     static void wait(MPI_Request *request);
 
-    static void isend(MPI_Request * request, Ty *buf, int count, int dest,
+    static void isend(MPI_Request *request, Ty *buf, int count, int dest,
                       MPI_Comm comm = MPI_COMM_WORLD,
                       int tag = 0);
 
-    static void irecv(MPI_Request * request, Ty *buf, int count, int source,
+    static void irecv(MPI_Request *request, Ty *buf, int count, int source,
                       MPI_Comm comm = MPI_COMM_WORLD,
                       int tag = 0);
 };

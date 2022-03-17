@@ -379,6 +379,11 @@ inline const shape_t &Tensor<Ty>::shape_global() const {
     return this->shape_global_;
 }
 
+template<typename Ty>
+inline size_t Tensor<Ty>::size_global() const {
+    return this->size_global_;
+}
+
 /**
  * @brief Gather a distributed Tensor in one process to a local Tensor.
  *
@@ -393,6 +398,11 @@ Tensor<Ty> Tensor<Ty>::gather() {
 template<typename Ty>
 Tensor<Ty> Tensor<Ty>::scatter(Distribution *distribution, int proc) {
     return Function::scatter<Ty>(*this, distribution, proc);
+}
+
+template<typename Ty>
+void Tensor<Ty>::sync(int proc) {
+    this->comm_->bcast(this->data_, (int) this->size_, proc);
 }
 
 template<typename Ty>
@@ -414,8 +424,11 @@ Ty &Tensor<Ty>::operator()(size_t x, ...) {
 
 template<typename Ty>
 const Tensor<Ty> Tensor<Ty>::operator=(const Tensor<Ty> &t) {
-    this->init_by_shape(t.shape_global());
-    this->init_by_distribution(t.distribution());
+    if (t.distribution() != nullptr) {
+        this->init_by_distribution(t.shape_global(), t.distribution());
+    } else {
+        this->init_by_shape(t.shape());
+    }
 
     if (this->data_ != nullptr) {
         Tensor<Ty>::ref_count[this->data_]--;
@@ -440,6 +453,11 @@ void Tensor<Ty>::zeros() { this->constant(0); }
 
 template<typename Ty>
 void Tensor<Ty>::ones() { this->constant(1); }
+
+template<typename Ty>
+void Tensor<Ty>::rand() {
+    this->op_->rand(this->data_, this->size_);
+}
 
 template<typename Ty>
 void Tensor<Ty>::randn() {
@@ -508,30 +526,6 @@ double Tensor<Ty>::fnorm() const {
 template<typename Ty>
 Ty Tensor<Ty>::sum() const {
     return Function::sum<Ty>(*this);
-}
-
-template<typename Ty>
-Tensor<Ty> Tensor<Ty>::N() {
-    assert(this->ndim() == 2);
-    Tensor<Ty> ret(*this);
-    ret.trans_ = Transpose::kN;
-    return ret;
-}
-
-template<typename Ty>
-Tensor<Ty> Tensor<Ty>::T() {
-    assert(this->ndim() == 2);
-    Tensor<Ty> ret(*this);
-    ret.trans_ = Transpose::kT;
-    return ret;
-}
-
-template<typename Ty>
-Tensor<Ty> Tensor<Ty>::C() {
-    assert(this->ndim() == 2);
-    Tensor<Ty> ret(*this);
-    ret.trans_ = Transpose::kC;
-    return ret;
 }
 
 template<typename Ty>
