@@ -155,4 +155,6 @@ if (USE_LAPACK)
     target_link_libraries(${PROJECT_NAME} PUBLIC "${LAPACK_LIBRARIES}")
 endif (USE_LAPACK)
 
-
+# subdirectory
+get_target_property(DIANA_LIBRARIES_LINKED ${PROJECT_NAME} LINK_LIBRARIES)
+add_subdirectory(tests)
