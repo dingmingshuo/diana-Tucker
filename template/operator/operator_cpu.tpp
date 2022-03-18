@@ -64,6 +64,9 @@ void Operator<Ty>::tenmat(Ty *B, Ty *A, const shape_t &shape, size_t n) {
         bc *= shape[i];
     }
     // Tenmat main process.
+#ifdef DIANA_OPENMP
+#pragma omp parallel for default(none) shared(B, A, size, br, bc)
+#endif
     for (size_t idx = 0; idx < size; idx += (br * bc)) {
         for (size_t i = 0; i < bc; i++) {
             for (size_t j = 0; j < br; j++) {
@@ -94,8 +97,12 @@ void Operator<Ty>::tenmatt(Ty *B, Ty *A, const shape_t &shape, size_t n) {
     }
     size_t col = size / br; // Column size of B;
     // Tenmat main process.
+#ifdef DIANA_OPENMP
+#pragma omp parallel for default(none) shared(B, A, size, br, bc, col)
+#endif
     for (size_t idx = 0; idx < size; idx += (br * bc)) {
         for (size_t j = 0; j < br; j++) {
+            // Util::memcpy(B + j * col + idx / br, A + idx + j * bc, sizeof(Ty) * bc);
             for (size_t i = 0; i < bc; i++) {
                 B[j * col + idx / br + i] = A[idx + j * bc + i];
             }
@@ -125,8 +132,12 @@ void Operator<Ty>::mattten(Ty *B, Ty *A, const shape_t &shape, size_t n) {
     }
     size_t col = size / br; // Column size of B;
     // Tenmat main process.
+#ifdef DIANA_OPENMP
+#pragma omp parallel for default(none) shared(B, A, size, br, bc, col)
+#endif
     for (size_t idx = 0; idx < size; idx += (br * bc)) {
         for (size_t j = 0; j < br; j++) {
+            // Util::memcpy(B + idx + j * bc, A + j * col + idx / br, sizeof(Ty) * bc);
             for (size_t i = 0; i < bc; i++) {
                 B[idx + j * bc + i] = A[j * col + idx / br + i];
             }

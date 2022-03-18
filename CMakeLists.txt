@@ -75,7 +75,7 @@ include_directories(
 
 
 # Set CXX_FLAGS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -W -Wall -Wextra -Wconversion")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -g -W -Wall -Wextra -Wconversion")
 
 
 # define USE_MPI
@@ -154,7 +154,6 @@ endif (USE_BLAS OR USE_LAPACK)
 if (USE_LAPACK)
     target_link_libraries(${PROJECT_NAME} PUBLIC "${LAPACK_LIBRARIES}")
 endif (USE_LAPACK)
-
 
 # subdirectory
 get_target_property(DIANA_LIBRARIES_LINKED ${PROJECT_NAME} LINK_LIBRARIES)
