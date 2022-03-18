@@ -61,11 +61,11 @@ set(SOURCES
         src/communicator.cpp
         src/distribution.cpp
         include/summary.hpp
-        src/summary.cpp
+        src/summary/summary.cpp
         include/algorithm.hpp
         template/algorithm/tucker/hooi_als.tpp
         template/function/matrix.tpp
-        template/function/tensor.tpp)
+        template/function/tensor.tpp src/summary/recorder.cpp)
 
 # Include directories
 include_directories(

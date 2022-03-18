@@ -57,7 +57,6 @@ Summary::end(const std::string &name) {
     assert(event.name == name);
     event.time_end = MPI_Wtime();
     event.time_length = event.time_end - event.time_start;
-    event.time_length += event.time_length;
     Summary::last_id_ = event.caller_id;
     if (Summary::last_id_ != ROOT_ID) {
         // If last_id_ is not root, then gather the data to the caller.

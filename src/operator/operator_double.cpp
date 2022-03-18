@@ -14,14 +14,15 @@ extern "C" {
 #else
 #ifdef DIANA_BLAS
 extern "C" {
-#include "cblas.h"
-#include "lapacke.h"
+#include "third_party/lapack/cblas.h"
+#include "third_party/lapack/lapacke.h"
 }
 #endif
 #endif
 
 template<>
 void Operator<double>::add(double *C, double *A, double *B, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] + B[i];
     }
@@ -29,6 +30,7 @@ void Operator<double>::add(double *C, double *A, double *B, size_t n) {
 
 template<>
 void Operator<double>::sub(double *C, double *A, double *B, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] - B[i];
     }
@@ -36,6 +38,7 @@ void Operator<double>::sub(double *C, double *A, double *B, size_t n) {
 
 template<>
 void Operator<double>::mul(double *C, double *A, double *B, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] * B[i];
     }
@@ -43,6 +46,7 @@ void Operator<double>::mul(double *C, double *A, double *B, size_t n) {
 
 template<>
 void Operator<double>::nmul(double *C, double *A, double B, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         C[i] = A[i] * B;
     }
@@ -50,6 +54,7 @@ void Operator<double>::nmul(double *C, double *A, double B, size_t n) {
 
 template<>
 void Operator<double>::constant(double *A, double c, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         A[i] = c;
     }
@@ -57,6 +62,7 @@ void Operator<double>::constant(double *A, double c, size_t n) {
 
 template<>
 void Operator<double>::rand(double *A, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         A[i] = (double) std::rand() / RAND_MAX;
     }
@@ -64,6 +70,7 @@ void Operator<double>::rand(double *A, size_t n) {
 
 template<>
 void Operator<double>::randn(double *A, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     for (size_t i = 0; i < n; i++) {
         A[i] = Util::randn();
     }
@@ -71,6 +78,7 @@ void Operator<double>::randn(double *A, size_t n) {
 
 template<>
 double Operator<double>::fnorm(double *A, size_t n) {
+    DIANA_OPERATOR_FUNC_START;
     double ret = 0;
     for (size_t i = 0; i < n; i++) {
         ret += A[i] * A[i];
@@ -81,8 +89,8 @@ double Operator<double>::fnorm(double *A, size_t n) {
 template<>
 void
 Operator<double>::inverse(double *C, double *A, size_t m) {
+    DIANA_OPERATOR_FUNC_START;
 #ifdef DIANA_LAPACK
-    Summary::start(METHOD_NAME);
     auto M = (lapack_int) m;
     lapack_int LDA = M;
     lapack_int INFO;
@@ -93,7 +101,6 @@ Operator<double>::inverse(double *C, double *A, size_t m) {
     INFO = LAPACKE_dgetri(LAPACK_COL_MAJOR, M, C, LDA, IPIV);
     checkwarn(INFO == 0);
     Operator<lapack_int>::free(IPIV);
-    Summary::end(METHOD_NAME);
 #else
     fatal("Cannot calculate inverse without BLAS!");
 #endif

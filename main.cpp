@@ -13,7 +13,7 @@
 int main(int argc, char *argv[]) {
     mpi_init(argc, argv);
     srand((unsigned int) 20000905);
-    std::ifstream fin("input.txt");
+    std::ifstream fin(argv[1]);
 
     // Init shape
     size_t N;

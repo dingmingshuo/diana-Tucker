@@ -2,8 +2,10 @@
 #define __DIANA_CORE_SRC_INCLUDE_OPERATOR_HPP__
 
 #include "def.hpp"
+#include "summary.hpp"
 
 #include <tuple>
+#include <functional>
 
 template<typename Ty>
 class Operator {
@@ -74,6 +76,10 @@ class Operator<complex32>;
 
 template
 class Operator<complex64>;
+
+#define DIANA_OPERATOR_FUNC_START auto recorder_ = Summary::Recorder(METHOD_NAME)
+#define DIANA_OPERATOR_FUNC_START_F(flop) auto recorder_ = Summary::Recorder(METHOD_NAME, flop)
+#define DIANA_OPERATOR_FUNC_START_FW(flop, bandwidth) auto recorder_ = Summary::Recorder(METHOD_NAME, flop, bandwidth)
 
 #include "operator/operator_cpu.tpp"
 #include "operator/operator_cpu_cartesian_block.tpp"

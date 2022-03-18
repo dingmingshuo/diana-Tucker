@@ -47,6 +47,22 @@ private:
     static bool recording_;
 
 public:
+    class Recorder {
+    public:
+        Recorder() = delete;
+
+        Recorder(const std::string &name);
+
+        Recorder(const std::string &name, long long flop);
+
+        Recorder(const std::string &name, long long flop, long long bandwidth);
+
+        ~Recorder();
+
+    private:
+        std::string name_;
+    };
+
     static void init();
 
     static void finalize();
